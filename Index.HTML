@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Saksham (Lumenrift) | Resin 3D printing, sculpting and modelling</title>
+<meta name="description" content="Resin 3D printing, Blender modelling and cosplay builds, made to order and shipped worldwide.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef5f3;--surf:#fff;--ink:#0b2b33;--mute:#4d6a70;--line:#cddddb;--acc:#0b8f88;--pop:#ff6a55;--on-pop:#fff;--glow:#bfeee7;--t1:#d6f0ec;--t2:#ffe0d9;--t3:#dde8fb;--shadow:0 18px 40px -22px rgba(11,43,51,.35);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07242a;--surf:#0d343b;--ink:#e9f7f4;--mute:#92b6b5;--line:#1f4f55;--acc:#52e3d2;--pop:#ff8a73;--on-pop:#2a0d08;--glow:#12525a;--t1:#0f4b52;--t2:#4a2a2b;--t3:#1d3f66;--shadow:0 18px 40px -22px #000}}
+:root[data-theme="dark"]{--bg:#07242a;--surf:#0d343b;--ink:#e9f7f4;--mute:#92b6b5;--line:#1f4f55;--acc:#52e3d2;--pop:#ff8a73;--on-pop:#2a0d08;--glow:#12525a;--t1:#0f4b52;--t2:#4a2a2b;--t3:#1d3f66;--shadow:0 18px 40px -22px #000}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth;background:var(--bg)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.65 Figtree,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;font-weight:700;letter-spacing:-.02em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--pop);outline-offset:3px}
+.wrap{width:min(1120px,100% - 2.5rem);margin-inline:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:1.3rem 0}
+.mark{font:700 1.45rem Fraunces,Georgia,serif;text-decoration:none}
+nav{display:flex;gap:.3rem;flex-wrap:wrap;background:var(--surf);border-radius:999px;padding:.35rem;box-shadow:var(--shadow)}
+nav a{text-decoration:none;color:var(--mute);font-weight:600;font-size:.92rem;padding:.45rem .95rem;border-radius:999px}
+nav a:hover{background:var(--t1);color:var(--ink)}
+.btn{display:inline-block;background:var(--pop);color:var(--on-pop);font-weight:600;text-decoration:none;padding:.95rem 1.7rem;border-radius:999px;box-shadow:0 12px 26px -12px var(--pop);transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.ghost{background:var(--surf);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.hero{display:grid;gap:1rem;align-items:center;padding:2.5rem 0 3.5rem}
+@media(min-width:860px){.hero{grid-template-columns:1.2fr .8fr;padding:3.5rem 0 4.5rem}}
+h1{font-size:clamp(2.8rem,7vw,5.4rem);line-height:1;font-weight:500;letter-spacing:-.035em}
+h1 em{font-style:italic;color:var(--acc)}
+.lede{max-width:33rem;color:var(--mute);font-size:1.2rem;margin:1.5rem 0 2rem}
+.cta{display:flex;gap:.8rem;flex-wrap:wrap}
+.vat{position:relative;width:min(100%,380px);aspect-ratio:1/1.12;justify-self:center}
+.vat::before{content:"";position:absolute;inset:-8%;border-radius:50%;background:radial-gradient(circle at 50% 45%,var(--glow),transparent 66%)}
+.vat svg{position:absolute;inset:6% 8%;width:84%;height:88%}
+.vat .fill{clip-path:inset(100% 0 0 0);animation:build 3.4s cubic-bezier(.55,0,.25,1) .4s forwards}
+.scan{position:absolute;left:0;right:0;height:2px;top:94%;background:var(--pop);box-shadow:0 0 22px 5px var(--pop);animation:scan 3.4s cubic-bezier(.55,0,.25,1) .4s forwards}
+@keyframes build{to{clip-path:inset(0 0 0 0)}}
+@keyframes scan{0%{top:94%;opacity:1}90%{opacity:1}100%{top:6%;opacity:0}}
+@media(prefers-reduced-motion:reduce){.vat .fill{animation:none;clip-path:none}.scan{display:none}}
+.facts{display:grid;gap:.8rem}
+@media(min-width:700px){.facts{grid-template-columns:repeat(3,1fr)}}
+.facts div{background:var(--surf);border-radius:22px;padding:1.4rem 1.6rem;box-shadow:var(--shadow)}
+.facts b{display:block;font:700 2rem Fraunces,Georgia,serif;color:var(--acc);line-height:1.2}
+.facts span{color:var(--mute);font-size:.95rem}
+section{padding:6rem 0 0}
+h2{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.04;font-weight:500;letter-spacing:-.03em;margin-bottom:2.2rem}
+.work{display:grid;gap:1.3rem}
+@media(min-width:860px){.work{grid-template-columns:repeat(12,1fr)}.p1{grid-column:span 7}.p2{grid-column:span 5}.p3{grid-column:span 12}}
+.proj{background:var(--surf);border-radius:32px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+@media(min-width:860px){.p3{flex-direction:row}.p3 .art{flex:0 0 42%;min-height:300px}.p3 .txt{padding:2.4rem}}
+.art{position:relative;min-height:290px;display:grid;place-items:center;padding:1.4rem}
+.p1 .art{background:var(--t1);min-height:420px}.p2 .art{background:var(--t2)}.p3 .art{background:var(--t3)}
+.art svg{width:min(62%,240px);height:auto;filter:drop-shadow(0 18px 24px rgba(11,43,51,.25))}
+.art .tag{position:absolute;left:1.2rem;top:1.2rem;background:var(--surf);color:var(--ink);font-weight:600;font-size:.85rem;padding:.3rem .9rem;border-radius:999px}
+.txt{padding:1.6rem 1.8rem 2rem;align-self:center}
+.txt h3{font-size:1.75rem;margin-bottom:.4rem}
+.txt p{margin:0;color:var(--mute);max-width:30rem}
+.svc{display:grid;gap:1rem}
+@media(min-width:860px){.svc{grid-template-columns:repeat(3,1fr)}}
+.svc article{background:var(--surf);border-radius:32px;padding:2rem;display:flex;flex-direction:column;gap:.7rem;box-shadow:var(--shadow);border-top:6px solid var(--acc)}
+.svc article:nth-child(2){border-color:var(--pop)}.svc article:nth-child(3){border-color:#6f8fe8}
+.svc h3{font-size:1.6rem}.svc p{margin:0;color:var(--mute);flex:1}
+.price{font:700 1.2rem Fraunces,Georgia,serif;color:var(--acc)}
+.skills{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.6rem}
+.skills span{background:var(--t1);padding:.35rem 1rem;border-radius:999px;font-weight:600;font-size:.92rem}
+.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:1.8rem}
+@media(min-width:760px){.steps{grid-template-columns:repeat(4,1fr);gap:1.4rem}.steps li::after{content:"";position:absolute;top:1.4rem;left:3.6rem;right:-1rem;height:2px;background:var(--line)}.steps li:last-child::after{display:none}}
+.steps li{counter-increment:s;position:relative}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:50%;background:var(--acc);color:var(--bg);font:700 1.15rem Fraunces,Georgia,serif;margin-bottom:1rem;position:relative;z-index:1}
+.steps h3{font-size:1.35rem;margin-bottom:.3rem}.steps p{margin:0;color:var(--mute);font-size:.98rem}
+.rev{display:grid;gap:1.3rem}
+@media(min-width:860px){.rev{grid-template-columns:.8fr 1.2fr}}
+.score{background:var(--acc);color:var(--bg);border-radius:32px;padding:2.4rem}
+.score b{display:block;font:500 clamp(5rem,12vw,8rem)/.95 Fraunces,Georgia,serif;letter-spacing:-.05em}
+.score span{font-size:1.4rem;letter-spacing:.2em}
+.score p{margin:.8rem 0 0;font-weight:600}
+.quotes{display:grid;gap:1.3rem}
+blockquote{margin:0;background:var(--surf);border-radius:32px;padding:2rem 2rem 1.7rem;box-shadow:var(--shadow);font:500 1.3rem/1.45 Fraunces,Georgia,serif}
+blockquote::before{content:"\201C";display:block;font-size:4rem;line-height:.6;color:var(--pop);margin-bottom:.6rem}
+blockquote footer{padding-top:1rem;font:600 .92rem Figtree,system-ui,sans-serif;color:var(--mute)}
+.contact{margin-top:6rem;padding:3.2rem 1.8rem;border-radius:40px;color:#fff;background:radial-gradient(circle at 85% 0,#ff6a5540,transparent 50%),linear-gradient(135deg,#0b6f6c,#093f4a)}
+@media(min-width:760px){.contact{padding:4.5rem}}
+.contact h2{max-width:14ch;margin-bottom:1rem}
+.contact p{max-width:32rem;margin:0 0 2rem;color:#d3eeea}
+.contact .ghost{background:#ffffff1f;color:#fff;box-shadow:inset 0 0 0 1.5px #ffffff66}
+footer.site{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:2.2rem 0 3rem;color:var(--mute);font-size:.92rem}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ff3e2"/><stop offset=".55" stop-color="#38b6d6"/><stop offset="1" stop-color="#ff7a63"/></linearGradient>
+  <pattern id="lyr" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="4.6" fill="#fff"/></pattern>
+  <mask id="mk"><rect width="300" height="380" fill="url(#lyr)"/></mask>
+  <g id="bust"><ellipse cx="150" cy="112" rx="62" ry="78"/><rect x="124" y="170" width="52" height="70"/><path d="M26 330C26 270 86 248 150 244c64 4 124 26 124 86z"/><rect x="40" y="330" width="220" height="34" rx="4"/></g>
+  <g id="horns"><ellipse cx="150" cy="195" rx="68" ry="88"/><path d="M92 140C60 120 40 80 52 36c24 18 46 40 56 70z"/><path d="M208 140c32-20 52-60 40-104-24 18-46 40-56 70z"/><rect x="40" y="330" width="220" height="34" rx="4"/></g>
+  <g id="figs"><circle cx="150" cy="86" r="30"/><path d="M150 120c-46 0-64 80-64 150h128c0-70-18-150-64-150z"/><circle cx="58" cy="196" r="20"/><path d="M58 220c-30 0-42 50-42 92h84c0-42-12-92-42-92z"/><circle cx="242" cy="212" r="18"/><path d="M242 234c-26 0-38 40-38 78h76c0-38-12-78-38-78z"/><rect x="10" y="330" width="280" height="34" rx="4"/></g>
+</defs></svg>
+<div class="wrap">
+<header>
+  <a class="mark" href="#top">Lumenrift</a>
+  <nav aria-label="Main"><a href="#work">Projects</a><a href="#services">Services</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a href="#contact">Contact</a></nav>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div>
+    <h1>Resin prints, sculpts and <em>cosplay builds</em>, made to order.</h1>
+    <p class="lede">I'm Saksham. I model in Blender and print in resin, from small figurines to full armour sets, and I ship worldwide from India.</p>
+    <div class="cta">
+      <a class="btn" href="https://www.fiverr.com/conversations/lumenrift">Message me on Fiverr</a>
+      <a class="btn ghost" href="#work">See projects</a>
+    </div>
+  </div>
+  <div class="vat" aria-hidden="true">
+    <svg viewBox="0 0 300 380"><use href="#bust" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.5" stroke-dasharray="4 5"/></svg>
+    <svg class="fill" viewBox="0 0 300 380"><g fill="url(#gl)" mask="url(#mk)"><use href="#bust"/></g></svg>
+    <div class="scan"></div>
+  </div>
+</div>
+
+<div class="facts">
+  <div><b>5.0</b><span>from 10 reviews on Fiverr</span></div>
+  <div><b>2 hours</b><span>average reply time</span></div>
+  <div><b>Worldwide</b><span>packing and shipping available</span></div>
+</div>
+
+<section id="work">
+  <h2>Projects</h2>
+  <div class="work">
+    <article class="proj p1">
+      <div class="art"><span class="tag">Resin bust</span><svg viewBox="0 0 300 380"><g fill="url(#gl)" mask="url(#mk)"><use href="#bust"/></g></svg></div>
+      <div class="txt"><h3>Homelander bust</h3><p>A bust-scale resin print, one of the bigger builds on my profile.</p></div>
+    </article>
+    <article class="proj p2">
+      <div class="art"><span class="tag">18 models</span><svg viewBox="0 0 300 380"><g fill="url(#gl)" mask="url(#mk)"><use href="#horns"/></g></svg></div>
+      <div class="txt"><h3>Devil Jinn cosplay armour</h3><p>A full armour set printed in resin from 18 separate models.</p></div>
+    </article>
+    <article class="proj p3">
+      <div class="art"><span class="tag">27 models</span><svg viewBox="0 0 300 380"><g fill="url(#gl)" mask="url(#mk)"><use href="#figs"/></g></svg></div>
+      <div class="txt"><h3>Spiritual figurines</h3><p>A collection of 27 figurines, modelled and printed in resin.</p></div>
+    </article>
+  </div>
+</section>
+
+<section id="services">
+  <h2>What I make</h2>
+  <div class="svc">
+    <article><h3>Resin 3D printing</h3><p>Custom models or your own files, printed in resin and packed for shipping.</p><span class="price">From $10</span></article>
+    <article><h3>Resin cosplay</h3><p>Props, armour and wearable pieces, printed in resin to fit your design.</p><span class="price">From $30</span></article>
+    <article><h3>Modelling and sculpting</h3><p>Prototypes and figurines built in Blender, ready to print.</p><span class="price">Message for a quote</span></article>
+  </div>
+  <div class="skills"><span>Resin 3D printing</span><span>3D modelling</span><span>Blender</span><span>English</span><span>Hindi</span></div>
+</section>
+
+<section id="process">
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><h3>Tell me the idea</h3><p>Send a sketch, reference or file, plus the size and deadline.</p></li>
+    <li><h3>I model it</h3><p>I sculpt or fix the model in Blender and check it for printing.</p></li>
+    <li><h3>I print it</h3><p>The piece is printed in resin, cured and cleaned up.</p></li>
+    <li><h3>It ships to you</h3><p>I pack it carefully and post it anywhere in the world.</p></li>
+  </ol>
+</section>
+
+<section id="reviews">
+  <h2>Kind words</h2>
+  <div class="rev">
+    <div class="score"><b>5.0</b><span aria-hidden="true">★★★★★</span><p>Across 10 reviews for communication, quality and value.</p></div>
+    <div class="quotes">
+      <blockquote>He handled the printing and painting of my custom model, and it came out amazingly. Highly recommended.<footer>oluwaseun3413, United States</footer></blockquote>
+      <blockquote>Great. Very pleased with this. Thank you.<footer>jdoherty1976, United Kingdom, repeat client</footer></blockquote>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <h2>Have something to make?</h2>
+  <p>Tell me what you're after, including size, finish and deadline, and I'll reply with a price.</p>
+  <div class="cta">
+    <a class="btn" href="https://www.fiverr.com/conversations/lumenrift">Message me on Fiverr</a>
+    <a class="btn ghost" href="https://www.fiverr.com/lumenrift">View my Fiverr profile</a>
+  </div>
+</section>
+</main>
+
+<footer class="site"><span>Saksham, Lumenrift</span><span>Resin printing, sculpting and modelling from India</span></footer>
+</div>
+</body>
+</html>
