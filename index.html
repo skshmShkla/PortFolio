@@ -177,6 +177,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
    ============================================================ */
 (function(){
   const MODEL_URL='your-model.glb';   // same folder as index.html
+  const USE_ORIGINAL_MATERIALS=false; // false = plain clay finish (always visible); true = keep the .glb's own materials
   const box0=$('#custom-model-container');
   if(!box0)return;
   if(!window.THREE){console.error('three.js failed to load (cdnjs).');return}
@@ -234,6 +235,8 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
       // and a still display piece does not need the skeleton.
       const model=new THREE.Group();
       let meshes=0,tris=0;
+      const seen=new Set();
+      const clay=new THREE.MeshStandardMaterial({color:0xf2a65a,roughness:.55,metalness:0,side:THREE.DoubleSide});
       gltf.scene.traverse(o=>{
         if(!o.isMesh||!o.geometry||!o.geometry.attributes.position)return;
         const g=o.geometry.clone();
@@ -241,8 +244,16 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
         g.applyMatrix4(o.matrixWorld);          // bake position + normals into world space
         if(!g.attributes.normal)g.computeVertexNormals();
         const src=[].concat(o.material||[]);
-        const mats=src.map(mt=>{const c=mt.clone();c.skinning=false;c.side=THREE.DoubleSide;return c});
-        const mesh=new THREE.Mesh(g,Array.isArray(o.material)?mats:mats[0]);
+        src.forEach(mt=>{if(seen.has(mt))return;seen.add(mt);
+          console.log('[model] material',JSON.stringify(mt.name||'(unnamed)'),'| colour #'+(mt.color?mt.color.getHexString():'none'),
+            '| map:',!!mt.map,'| opacity:',mt.opacity,'| transparent:',mt.transparent,
+            '| metalness:',mt.metalness,'| roughness:',mt.roughness)});
+        let mat=clay;
+        if(USE_ORIGINAL_MATERIALS){
+          const mats=src.map(mt=>{const c=mt.clone();c.skinning=false;c.side=THREE.DoubleSide;return c});
+          mat=Array.isArray(o.material)?mats:mats[0];
+        }
+        const mesh=new THREE.Mesh(g,mat);
         mesh.frustumCulled=false;
         model.add(mesh);
         meshes++;tris+=(g.index?g.index.count:g.attributes.position.count)/3;
@@ -258,6 +269,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
       model.scale.setScalar(s);
       model.position.copy(centre).multiplyScalar(-s);   // re-centre after scaling
       scene.add(model);
+      if(/[?&]debug/.test(location.search)){scene.add(new THREE.BoxHelper(model,0xff00ff));scene.add(new THREE.AxesHelper(1.5));}
       console.log('[model] Rebuilt',meshes,'meshes /',Math.round(tris),'triangles | size:',
         size.x.toFixed(3),size.y.toFixed(3),size.z.toFixed(3),'| scale:',s.toFixed(3));
 
@@ -265,8 +277,11 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
       let n=0;
       (function chk(){
         if(++n<30)return requestAnimationFrame(chk);
+        const cs=getComputedStyle(ren.domElement),card=box0.closest('.card');
         console.log('[model] canvas',ren.domElement.clientWidth+'x'+ren.domElement.clientHeight,
-          '| triangles drawn last frame:',ren.info.render.triangles);
+          '| triangles drawn last frame:',ren.info.render.triangles,
+          '| canvas visibility/opacity:',cs.visibility,cs.opacity,
+          '| card opacity:',card?getComputedStyle(card).opacity:'n/a');
       })();
     },
     undefined,
