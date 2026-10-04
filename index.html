@@ -326,24 +326,29 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
 })();
 
 /* ============================================================
-   HERO WIREFRAME — your-model.glb "printing" in the background
+   HERO — your-model.glb printing on a static build plate
    ============================================================ */
 (function(){
   const MODEL_URL='your-model.glb';  // same folder as index.html
-  const FIT=3.6;            // model's largest side, in scene units (bigger = larger on screen)
-  const PRINT_SECONDS=14;   // time for one full print (then it holds briefly and restarts)
-  const SLICE=.05;          // thickness of the bright layer, as a share of model height
+  const FIT=3.6;            // model's largest side, in scene units
+  const PRINT_SECONDS=14;   // one full print, then a short hold and restart
+  const SLICE=.04;          // thickness of the glowing layer, as a share of model height
+  const TURN=-.6;           // fixed viewing angle of the model (radians); the model does not spin
 
   if(!window.THREE||!THREE.GLTFLoader){console.warn('[hero] three.js or GLTFLoader missing');return}
   const T=THREE,cv=$('#gl'),r=new T.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
   r.setPixelRatio(Math.min(devicePixelRatio,2));r.localClippingEnabled=true;r.outputEncoding=T.sRGBEncoding;
   const sc=new T.Scene(),cam=new T.PerspectiveCamera(40,1,.1,50);
-  const obj=new T.Group(),m=new T.Group();obj.add(m);sc.add(obj);
+  const obj=new T.Group();sc.add(obj);
+  sc.add(new T.AmbientLight(0xffffff,.75));
+  const key=new T.DirectionalLight(0xffffff,.8);key.position.set(4,6,5);sc.add(key);
+  const rim=new T.DirectionalLight(0xffd9a8,.4);rim.position.set(-5,3,-4);sc.add(rim);
 
-  // top: hides everything above the current layer. bot: leaves only a thin bright slice.
-  const top=new T.Plane(new T.Vector3(0,-1,0),0),bot=new T.Plane(new T.Vector3(0,1,0),0);
-  const done=new T.MeshBasicMaterial({color:0x6b6258,wireframe:true,transparent:true,opacity:.14,clippingPlanes:[top]});
-  const edge=new T.MeshBasicMaterial({color:0x8a5a1c,wireframe:true,transparent:true,opacity:.75,clippingPlanes:[top,bot]});
+  // top hides everything above the current layer; bot leaves only a thin slice for the glow
+  const top=new T.Plane(new T.Vector3(0,-1,0),-99),bot=new T.Plane(new T.Vector3(0,1,0),99);
+  const solid=new T.MeshStandardMaterial({color:0xf2a65a,roughness:.55,metalness:0,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
+  const wire=new T.MeshBasicMaterial({color:0x1c1814,wireframe:true,transparent:true,opacity:.2,clippingPlanes:[top]});
+  const glow=new T.MeshBasicMaterial({color:0xfff0cf,side:T.DoubleSide,clippingPlanes:[top,bot],polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
 
   let h=0,t0=null;   // h = model height, t0 = moment printing started
 
@@ -355,43 +360,52 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
       const geo=o.geometry.clone();
       geo.deleteAttribute('skinIndex');geo.deleteAttribute('skinWeight');  // static pose, no skeleton needed
       geo.applyMatrix4(o.matrixWorld);                                      // bake position/rotation/scale
-      [done,edge].forEach(mt=>{const ms=new T.Mesh(geo,mt);ms.frustumCulled=false;g.add(ms)});
+      if(!geo.attributes.normal)geo.computeVertexNormals();
+      [solid,wire,glow].forEach(mt=>{const ms=new T.Mesh(geo,mt);ms.frustumCulled=false;g.add(ms)});
     });
     const bb=new T.Box3().setFromObject(g),sz=bb.getSize(new T.Vector3()),c=bb.getCenter(new T.Vector3());
     const s=FIT/(Math.max(sz.x,sz.y,sz.z)||1);
-    g.scale.setScalar(s);g.position.copy(c).multiplyScalar(-s);  // centre it so it spins on its own axis
-    m.add(g);
-    h=sz.y*s;t0=performance.now();
+    g.scale.setScalar(s);g.position.copy(c).multiplyScalar(-s);  // centre the model on the plate
+    const m=new T.Group();m.rotation.y=TURN;m.add(g);obj.add(m);
+    h=sz.y*s;
+
+    // static build plate under the model
+    const R=Math.hypot(sz.x,sz.z)*s/2+.4;
+    const plate=new T.Mesh(new T.CylinderGeometry(R,R,.16,72),new T.MeshStandardMaterial({color:0x2a231c,roughness:.8}));
+    plate.position.y=-h/2-.08;obj.add(plate);
+    t0=performance.now();
   },undefined,e=>console.warn('[hero] could not load '+MODEL_URL,e));
 
   let frame=0;
-  const pEl=$('#layer'),pBEl=$('#prog'),baseX=()=>innerWidth>720?1.8:0;  // nudge right on desktop, clear of the headline
+  const pEl=$('#layer'),pBEl=$('#prog');
 
   function render(){
     frame++;
-    m.rotation.y=frame*.004;m.rotation.x=Math.sin(frame*.0005)*.2;
-    obj.position.x+=(baseX()+mx*2-obj.position.x)*.05;
-    obj.position.y+=(-my*2-obj.position.y)*.05;
-
     let p=0;
     if(t0!==null){
       const k=(performance.now()-t0)/(PRINT_SECONDS*1000);
-      p=Math.min(1,k%1.15);                       // last 15% of each cycle holds the finished model
-      const lo=-h/2-.25,hi=h/2+.25,y=obj.position.y+lo+p*(hi-lo),th=(hi-lo)*SLICE;
-      top.constant=y;bot.constant=th-y;
-    }else{top.constant=-99;bot.constant=99}      // nothing shown until the model has loaded
+      p=Math.min(1,k%1.15);                          // last 15% of each cycle holds the finished model
+      const u=obj.scale.y,lo=-h/2-.01,hi=h/2+.01;
+      const y=obj.position.y+u*(lo+p*(hi-lo));       // layer height in world space
+      top.constant=y;
+      bot.constant=p>=1?-99:u*(hi-lo)*SLICE-y;       // glow switches off once the print is done
+    }
 
     if(frame%4===0){
       pEl.textContent=Math.floor(p*1000).toString().padStart(3,'0');
       pBEl.style.width=p*100+'%';
     }
-
-    cam.position.set(3,0,7);cam.lookAt(0,0,0);
     r.render(sc,cam);
     requestAnimationFrame(render);
   }
 
-  function size(){cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)}
+  function size(){
+    const mob=innerWidth<=720;
+    cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight);
+    cam.position.set(0,1.6,8);cam.lookAt(0,0,0);
+    obj.scale.setScalar(mob?Math.min(1,cam.aspect*1.5):1);
+    obj.position.set(mob?0:1.8,mob?1.4:-.1,0);       // right of the headline on desktop, above the text on mobile
+  }
   addEventListener('resize',size);size();
   render();
 })();
