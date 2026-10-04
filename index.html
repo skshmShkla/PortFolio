@@ -264,7 +264,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
     return k%2?-1:1;
   }
 
-  let h=0,t0=null;
+  let h=0,t0=null,plateR=2.8;
 
   new T.GLTFLoader().load(MODEL_URL,gltf=>{
     gltf.scene.updateMatrixWorld(true);
@@ -292,6 +292,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
     const R=Math.hypot(sz.x,sz.z)*s/2+.4;
     const plate=new T.Mesh(new T.CylinderGeometry(R,R,.16,72),new T.MeshStandardMaterial({color:0x6b6258,roughness:.8}));
     plate.position.y=-h/2-.08;obj.add(plate);
+    plateR=R;size();                                             // re-fit now that the real model size is known
     t0=performance.now();
   },undefined,e=>console.warn('[hero] could not load '+MODEL_URL,e));
 
@@ -338,10 +339,21 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
     const mob=innerWidth<=720;
     cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight);
     cam.position.set(0,1.6,8);cam.lookAt(0,0,0);
-    obj.scale.setScalar(mob?Math.min(1,cam.aspect*1.5):1);
-    obj.position.set(mob?0:2.0,mob?1.4:-.1,0);
+    if(!mob){obj.scale.setScalar(1);obj.position.set(2.0,-.1,0);return}
+    // mobile: fit the figure between the header bar and the headline, so the head never hides under the bar
+    const upp=2*8*Math.tan(T.MathUtils.degToRad(cam.fov/2))/innerHeight;        // world units per CSS pixel at the model
+    const yTop=(innerHeight/2-($('nav').offsetHeight+10))*upp;                  // head top: just under the header
+    const yBot=(innerHeight/2-($('.hc').offsetTop+40))*upp;                     // feet and plate: may dip slightly behind the eyebrow text
+    const hh=h||FIT;
+    let sc=(yTop-yBot)/(hh+.7);
+    sc=Math.min(sc,.95*innerWidth*upp/(2*plateR));                              // keep the plate inside the screen width
+    sc=Math.max(.25,Math.min(1,sc));
+    obj.scale.setScalar(sc);
+    obj.position.set(0,yTop-sc*hh/2,0);
   }
-  addEventListener('resize',size);size();
+  addEventListener('resize',size);addEventListener('load',size);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(size);   // headline height can change once fonts load
+  size();
   render();
 })();
 </script>
