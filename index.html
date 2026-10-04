@@ -228,10 +228,20 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
 
   /* ---- the brush: tip at the origin, handle along +Y, tilted toward the camera ---- */
   const brush=new T.Group();brush.visible=false;obj.add(brush);
-  [[new T.CylinderGeometry(.1,.015,.5,20),0xf2a65a,.25,{}],                          // paint-loaded bristles
-   [new T.CylinderGeometry(.125,.105,.4,20),0xd8d2c6,.7,{metalness:.35,roughness:.3}], // ferrule
-   [new T.CylinderGeometry(.045,.13,1.1,20),0x8a5a1c,1.45,{}]                          // handle
-  ].forEach(([geo,color,y,ex])=>{const m=new T.Mesh(geo,new T.MeshStandardMaterial(Object.assign({color,roughness:.5},ex)));m.position.y=y;brush.add(m)});
+  const lathe=pts=>new T.LatheGeometry(pts.map(([r,y])=>new T.Vector2(r,y)),32);
+  const phong=(color,ex)=>new T.MeshPhongMaterial(Object.assign({color,side:T.DoubleSide},ex));
+  // bristles: teardrop belly narrowing to a fine point; paint-loaded tip fading into dark sable hair
+  const bg=lathe([[0,0],[.012,.03],[.04,.12],[.075,.25],[.095,.38],[.1,.47],[.093,.56],[.084,.61]]);
+  const bp=bg.attributes.position,bc=new Float32Array(bp.count*3),cPaint=new T.Color(0xf2a65a),cHair=new T.Color(0x3a281c),cc=new T.Color();
+  for(let i=0;i<bp.count;i++){cc.copy(cPaint).lerp(cHair,T.MathUtils.clamp((bp.getY(i)-.14)/.2,0,1));bc.set([cc.r,cc.g,cc.b],i*3)}
+  bg.setAttribute('color',new T.BufferAttribute(bc,3));
+  brush.add(new T.Mesh(bg,new T.MeshStandardMaterial({vertexColors:true,roughness:.8,side:T.DoubleSide})));
+  // metal ferrule with crimp grooves
+  brush.add(new T.Mesh(lathe([[.083,.6],[.093,.63],[.095,.66],[.095,.74],[.089,.76],[.095,.78],[.095,.86],[.089,.88],[.095,.9],[.095,.96],[.08,1.0],[.066,1.02]]),phong(0xaab0b8,{specular:0xffffff,shininess:90})));
+  // glossy walnut handle: slim neck, swelling belly, rounded end
+  brush.add(new T.Mesh(lathe([[.062,1.0],[.066,1.08],[.078,1.3],[.09,1.55],[.09,1.75],[.08,1.95],[.058,2.12],[.03,2.22],[0,2.25]]),phong(0x5a3416,{specular:0x886644,shininess:55})));
+  // accent ring where handle meets ferrule
+  brush.add(new T.Mesh(lathe([[.07,1.04],[.078,1.05],[.078,1.1],[.07,1.11]]),phong(0xf2a65a,{shininess:40})));
   brush.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),new T.Vector3(.5,.75,.55).normalize());
 
   const ease=x=>x*x*(3-2*x),c01=x=>Math.max(0,Math.min(1,x));
@@ -277,7 +287,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
     const m=new T.Group();m.rotation.y=TURN;m.add(g);obj.add(m);
     gRef=g;
     h=sz.y*s;
-    brush.scale.setScalar((h/ROWS)/.2);                          // bristle width matches one row
+    brush.scale.setScalar((h/ROWS)/.2*.9);                          // bristle width matches one row
 
     const R=Math.hypot(sz.x,sz.z)*s/2+.4;
     const plate=new T.Mesh(new T.CylinderGeometry(R,R,.16,72),new T.MeshStandardMaterial({color:0x6b6258,roughness:.8}));
