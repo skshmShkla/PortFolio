@@ -227,29 +227,29 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
     MODEL_URL,
     gltf=>{
       scene.remove(placeholder);
-      const model=gltf.scene;
-      model.updateMatrixWorld(true);
+      gltf.scene.updateMatrixWorld(true);
 
-      // Quick measure (can be wrong for skinned/rigged models), logged for comparison
-      const quick=new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
-
-      // Real measure: walk every vertex, applying the skin pose and world matrix
-      const bb=new THREE.Box3(),v=new THREE.Vector3();
-      let meshes=0,skinned=0;
-      model.traverse(o=>{
+      // Rebuild the model as plain static meshes in their rest pose.
+      // Rigged (skinned) exports can render at the wrong scale or get culled,
+      // and a still display piece does not need the skeleton.
+      const model=new THREE.Group();
+      let meshes=0,tris=0;
+      gltf.scene.traverse(o=>{
         if(!o.isMesh||!o.geometry||!o.geometry.attributes.position)return;
-        meshes++;
-        o.frustumCulled=false;   // skinned meshes are often culled by mistake
-        [].concat(o.material||[]).forEach(mt=>{mt.side=THREE.DoubleSide;});
-        const pos=o.geometry.attributes.position;
-        if(o.isSkinnedMesh){skinned++;o.skeleton.update();}
-        for(let i=0;i<pos.count;i++){
-          if(o.isSkinnedMesh)o.boneTransform(i,v);else v.fromBufferAttribute(pos,i);
-          v.applyMatrix4(o.matrixWorld);
-          bb.expandByPoint(v);
-        }
+        const g=o.geometry.clone();
+        g.deleteAttribute('skinIndex');g.deleteAttribute('skinWeight');
+        g.applyMatrix4(o.matrixWorld);          // bake position + normals into world space
+        if(!g.attributes.normal)g.computeVertexNormals();
+        const src=[].concat(o.material||[]);
+        const mats=src.map(mt=>{const c=mt.clone();c.skinning=false;c.side=THREE.DoubleSide;return c});
+        const mesh=new THREE.Mesh(g,Array.isArray(o.material)?mats:mats[0]);
+        mesh.frustumCulled=false;
+        model.add(mesh);
+        meshes++;tris+=(g.index?g.index.count:g.attributes.position.count)/3;
       });
 
+      model.updateMatrixWorld(true);
+      const bb=new THREE.Box3().setFromObject(model);
       const size=bb.getSize(new THREE.Vector3());
       const centre=bb.getCenter(new THREE.Vector3());
       const max=Math.max(size.x,size.y,size.z);
@@ -258,10 +258,16 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
       model.scale.setScalar(s);
       model.position.copy(centre).multiplyScalar(-s);   // re-centre after scaling
       scene.add(model);
-      console.log('[model] Loaded. meshes:',meshes,'| skinned:',skinned,
-        '| quick size:',quick.x.toFixed(3),quick.y.toFixed(3),quick.z.toFixed(3),
-        '| real size:',size.x.toFixed(3),size.y.toFixed(3),size.z.toFixed(3),
-        '| scale applied:',s.toFixed(3));
+      console.log('[model] Rebuilt',meshes,'meshes /',Math.round(tris),'triangles | size:',
+        size.x.toFixed(3),size.y.toFixed(3),size.z.toFixed(3),'| scale:',s.toFixed(3));
+
+      // After ~30 frames, report what the renderer actually drew
+      let n=0;
+      (function chk(){
+        if(++n<30)return requestAnimationFrame(chk);
+        console.log('[model] canvas',ren.domElement.clientWidth+'x'+ren.domElement.clientHeight,
+          '| triangles drawn last frame:',ren.info.render.triangles);
+      })();
     },
     undefined,
     err=>console.error('[model] GLTFLoader error:',err)
