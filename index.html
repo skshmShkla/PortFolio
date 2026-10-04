@@ -275,15 +275,20 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
   const A=-1.7;
 
   if(hasMesh){
-    const geo=new T.BufferGeometry();
-    const ab=atob(MESH.p),ba=new Uint8Array(ab.length);
-    for(let i=0;i<ab.length;i++)ba[i]=ab.charCodeAt(i);
-    const f32=new Float32Array(ba.buffer);
-    geo.setAttribute('position',new T.BufferAttribute(f32,3));
-    const mat=new T.MeshBasicMaterial({color:0x6b6258,wireframe:true,transparent:true,opacity:.08});
-    const ms=new T.Mesh(geo,mat);
-    ms.scale.setScalar(40);
-    m.add(ms);
+    try{
+      const geo=new T.BufferGeometry();
+      const ab=atob(MESH.p.replace(/\s/g,'')),ba=new Uint8Array(ab.length);
+      for(let i=0;i<ab.length;i++)ba[i]=ab.charCodeAt(i);
+      // Keep whole triangles only (9 floats = 36 bytes), so a damaged tail can't throw
+      const floats=Math.floor(ba.length/36)*9;
+      if(ba.length%36)console.warn('[hero] Mesh string is damaged or cut off; trimmed',ba.length%36,'bytes.');
+      const f32=new Float32Array(ba.buffer,0,floats);
+      geo.setAttribute('position',new T.BufferAttribute(f32,3));
+      const mat=new T.MeshBasicMaterial({color:0x6b6258,wireframe:true,transparent:true,opacity:.08});
+      const ms=new T.Mesh(geo,mat);
+      ms.scale.setScalar(40);
+      m.add(ms);
+    }catch(e){console.warn('[hero] Wireframe skipped:',e)}
   }
 
   let frame=0;
