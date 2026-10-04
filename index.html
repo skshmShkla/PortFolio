@@ -341,13 +341,12 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
   const sc=new T.Scene(),cam=new T.PerspectiveCamera(40,1,.1,50);
   const obj=new T.Group();sc.add(obj);
   sc.add(new T.AmbientLight(0xffffff,.75));
-  const key=new T.DirectionalLight(0xffffff,.8);key.position.set(4,6,5);sc.add(key);
-  const rim=new T.DirectionalLight(0xffd9a8,.4);rim.position.set(-5,3,-4);sc.add(rim);
+  const key=new T.DirectionalLight(0xffffff,1);key.position.set(4,6,5);sc.add(key);
+  const rim=new T.DirectionalLight(0xffffff,1.1);rim.position.set(-5,3,-4);sc.add(rim);
 
   // top hides everything above the current layer; bot leaves only a thin slice for the glow
   const top=new T.Plane(new T.Vector3(0,-1,0),-99),bot=new T.Plane(new T.Vector3(0,1,0),99);
-  const solid=new T.MeshStandardMaterial({color:0xf2a65a,roughness:.55,metalness:0,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
-  const wire=new T.MeshBasicMaterial({color:0x1c1814,wireframe:true,transparent:true,opacity:.2,clippingPlanes:[top]});
+  const solid=new T.MeshStandardMaterial({color:0x1a1816,roughness:.95,metalness:0,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
   const glow=new T.MeshBasicMaterial({color:0xfff0cf,side:T.DoubleSide,clippingPlanes:[top,bot],polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
 
   let h=0,t0=null;   // h = model height, t0 = moment printing started
@@ -361,7 +360,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
       geo.deleteAttribute('skinIndex');geo.deleteAttribute('skinWeight');  // static pose, no skeleton needed
       geo.applyMatrix4(o.matrixWorld);                                      // bake position/rotation/scale
       if(!geo.attributes.normal)geo.computeVertexNormals();
-      [solid,wire,glow].forEach(mt=>{const ms=new T.Mesh(geo,mt);ms.frustumCulled=false;g.add(ms)});
+      [solid,glow].forEach(mt=>{const ms=new T.Mesh(geo,mt);ms.frustumCulled=false;g.add(ms)});
     });
     const bb=new T.Box3().setFromObject(g),sz=bb.getSize(new T.Vector3()),c=bb.getCenter(new T.Vector3());
     const s=FIT/(Math.max(sz.x,sz.y,sz.z)||1);
@@ -371,7 +370,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
 
     // static build plate under the model
     const R=Math.hypot(sz.x,sz.z)*s/2+.4;
-    const plate=new T.Mesh(new T.CylinderGeometry(R,R,.16,72),new T.MeshStandardMaterial({color:0x2a231c,roughness:.8}));
+    const plate=new T.Mesh(new T.CylinderGeometry(R,R,.16,72),new T.MeshStandardMaterial({color:0x6b6258,roughness:.8}));
     plate.position.y=-h/2-.08;obj.add(plate);
     t0=performance.now();
   },undefined,e=>console.warn('[hero] could not load '+MODEL_URL,e));
