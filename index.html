@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Lumenrift: resin 3D printing, Blender modelling, sculpting and cosplay armour, shipped worldwide.">
 <title>Lumenrift — Resin 3D Printing, Sculpting & Modelling</title>
-<link rel="icon" href="favicon.png" sizes="any">
+<link rel="icon" href="favicon.ico" sizes="any">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light;--bg:#f7f4ee;--fg:#1c1814;--mut:#6b6258;--surface:#fffdf9;--line:#e0d9cc;--a:#f2a65a;--b:#8a5a1c;--on:#1c1814;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth;scroll-padding-top:calc(100px + env(safe-area-inset-top,0px))}
+html{scroll-behavior:smooth;scroll-padding-top:calc(120px + env(safe-area-inset-top,0px))}
 body{background:var(--bg);color:var(--fg);font:400 1rem/1.65 Manrope,system-ui,sans-serif;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.05}
 .bar{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--a);z-index:60}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 5vw 14px;background:var(--bg);border-bottom:1px solid var(--line)}
-nav b{font:800 1.8rem Fraunces,Georgia,serif;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:12px}nav b img{height:64px;width:64px;display:block}nav b span{color:var(--b)}
+nav b{font:800 1.8rem Fraunces,Georgia,serif;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:12px}nav b em{font-style:normal}nav b img{height:76px;width:76px;display:block;position:relative;top:7px}nav b span{color:var(--b)}
 nav div{display:flex;gap:26px;align-items:center;font-size:.9rem;color:var(--mut)}
 nav div a:hover{color:var(--fg)}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:4px;font-weight:700;border:1px solid var(--fg);transition:transform .25s,box-shadow .25s}
@@ -25,7 +25,7 @@ nav div a:hover{color:var(--fg)}
 .btn{transition:transform .25s,box-shadow .25s,translate .2s ease-out}.btn:hover{transform:translateY(-2px)}
 section{padding:clamp(70px,13vh,130px) 5vw;max-width:1280px;margin:auto;position:relative;z-index:1}
 
-.hero{max-width:none;min-height:100svh;display:grid;align-items:center;padding-top:110px;overflow:hidden}
+.hero{max-width:none;min-height:100svh;display:grid;align-items:center;padding-top:130px;overflow:hidden}
 #gl{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .hc{position:relative;z-index:2;max-width:720px;pointer-events:none}.hc a{pointer-events:auto}
 .eb{display:inline-flex;gap:10px;align-items:center;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:22px}
@@ -80,14 +80,14 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px
 </head>
 <body>
 <div class="bar" id="bar"></div>
-<nav><b><img src="Logo.png" alt="Lumenrift logo">lumen<span>rift</span></b><div><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Hire Lumenrift</a></div></nav>
+<nav><b><img src="Logo.png" alt="Lumenrift logo"><em>lumen<span>rift</span></em></b><div><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Hire Lumenrift</a></div></nav>
 
 <section class="hero" id="top">
   <canvas id="gl"></canvas>
   <div class="hc">
     <div class="eb"><i></i>Resin 3D printing · Sculpting · Cosplay</div>
-    <h1><span class="w" style="--i:0">We</span> <span class="w" style="--i:1">turn</span> <span class="w" style="--i:2">your</span> <span class="w" style="--i:3">imagination</span> <span class="w" style="--i:4">into</span> <em><span class="w" style="--i:5">something</span> <span class="w" style="--i:6">you</span> <span class="w" style="--i:7">can</span> <span class="w" style="--i:8">hold.</span></em></h1>
-    <p class="sub">We are a resin 3D printing and sculpting studio in India. Custom collectibles, cosplay armour and prototypes, modelled, printed and shipped worldwide.</p>
+    <h1><span class="w" style="--i:0">Lumenrift</span> <span class="w" style="--i:1">turns</span> <span class="w" style="--i:2">your</span> <span class="w" style="--i:3">imagination</span> <span class="w" style="--i:4">into</span> <em><span class="w" style="--i:5">something</span> <span class="w" style="--i:6">you</span> <span class="w" style="--i:7">can</span> <span class="w" style="--i:8">hold.</span></em></h1>
+    <p class="sub">Lumenrift is a resin 3D printing and sculpting studio in India. Custom collectibles, cosplay armour and prototypes, modelled, printed and shipped worldwide.</p>
     <div class="cta"><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Start a project →</a><a class="btn" href="#work">See the work</a></div>
   </div>
   <div class="hud"><span id="stage">LIVE RESIN PRINT</span><strong><span id="lbl">LAYER</span> <span id="layer">000</span></strong><div><i id="prog"></i></div></div>
