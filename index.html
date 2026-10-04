@@ -16,7 +16,7 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.05}
 .bar{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--a);z-index:60}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 5vw 14px;background:var(--bg);border-bottom:1px solid var(--line)}
-nav b{font:800 1.8rem Fraunces,Georgia,serif;letter-spacing:-.02em}nav b span{color:var(--b)}
+nav b{font:800 1.8rem Fraunces,Georgia,serif;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:12px}nav b img{height:44px;width:44px;display:block}nav b span{color:var(--b)}
 nav div{display:flex;gap:26px;align-items:center;font-size:.9rem;color:var(--mut)}
 nav div a:hover{color:var(--fg)}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:4px;font-weight:700;border:1px solid var(--fg);transition:transform .25s,box-shadow .25s}
@@ -80,7 +80,7 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px
 </head>
 <body>
 <div class="bar" id="bar"></div>
-<nav><b>lumen<span>rift</span></b><div><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Hire me</a></div></nav>
+<nav><b><img src="Logo.png" alt="Lumenrift logo">lumen<span>rift</span></b><div><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Hire me</a></div></nav>
 
 <section class="hero" id="top">
   <canvas id="gl"></canvas>
