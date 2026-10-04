@@ -65,6 +65,7 @@ h2{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.03em;margin
 .tile{aspect-ratio:1;background:var(--a);opacity:.2;animation:wave 2.6s ease-in-out infinite;animation-delay:calc(var(--i)*70ms)}
 .hex{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.fig{border-radius:50% 50% 14% 14%/62% 62% 14% 14%}
 @keyframes wave{50%{opacity:1;transform:scale(1.08)}}
+.wk{grid-template-columns:1fr}.wk .pr{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:36px;align-items:center}.wk .art{height:380px;margin:0}@media(max-width:720px){.wk .pr{grid-template-columns:1fr;gap:22px}.wk .art{height:280px}}
 .pr h3{font-size:1.6rem}.pr p{color:var(--mut);font-size:.95rem;margin-top:8px}
 .tag{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--line);border-radius:3px;color:var(--b);margin-bottom:12px}
 
@@ -115,17 +116,15 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px
 
 <section id="work">
   <div class="kick">02 — Selected projects</div><h2>Big builds, printed layer by layer.</h2>
-  <div class="g3">
+  <div class="g3 wk">
     <article class="card pr rv">
       <div class="art" id="custom-model-container" style="cursor:grab"></div>
-      <span class="tag">Bust · Resin</span>
+      <div><span class="tag">Bust · Resin</span>
       <h3>Custom 3D Model</h3>
-      <p>An imported GLTF model rendered interactively. Drag to rotate the viewport in real-time.</p>
+      <p>An imported GLTF model rendered interactively. Drag to rotate the viewport in real-time.</p></div>
     </article>
 
-    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(6,1fr)" data-grid="18" data-shape="hex"></div></div><span class="tag">18 models · Cosplay</span><h3>Devil Jinn Armour</h3><p>A full cosplay armour set split into 18 printed models, designed to assemble cleanly and look the part.</p></article>
 
-    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(9,1fr)" data-grid="27" data-shape="fig"></div></div><span class="tag">27 models · Figurines</span><h3>Spiritual Figurines</h3><p>A collection of 27 individually modelled figurines, printed as a consistent, display-ready series.</p></article>
   </div>
 </section>
 
@@ -350,7 +349,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
   const rim=new T.DirectionalLight(0xffffff,1.1);rim.position.set(-5,3,-4);sc.add(rim);
 
   const top=new T.Plane(new T.Vector3(0,-1,0),-99),bot=new T.Plane(new T.Vector3(0,1,0),99);
-  const solid=new T.MeshStandardMaterial({color:0x1a1816,roughness:.95,metalness:0,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
+  const solid=new T.MeshStandardMaterial({color:0xe8923a,emissive:0x4a2306,roughness:.3,metalness:.05,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
   const glow=new T.MeshBasicMaterial({color:0xfff0cf,side:T.DoubleSide,clippingPlanes:[top,bot],polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
 
   /* ---- paint: a textured copy of the model that only exists where the brush has been ----
