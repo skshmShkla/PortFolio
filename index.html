@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Lumenrift: resin 3D printing, Blender modelling, sculpting and cosplay armour, shipped worldwide.">
 <title>Lumenrift — Resin 3D Printing, Sculpting & Modelling</title>
-<link rel="icon" href="favicon.png" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light;--bg:#f7f4ee;--fg:#1c1814;--mut:#6b6258;--surface:#fffdf9;--line:#e0d9cc;--a:#f2a65a;--b:#8a5a1c;--on:#1c1814;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -207,16 +207,20 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
     c.onBeforeCompile=sh=>{
       Object.assign(sh.uniforms,PU);
       sh.vertexShader='varying vec3 vLP;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvLP=transformed;');
-      sh.fragmentShader='varying vec3 vLP;uniform float uProg,uRows;uniform vec4 uBox;\n'+sh.fragmentShader
+      sh.fragmentShader='varying vec3 vLP;uniform float uProg,uRows;uniform vec4 uBox;\nfloat flow(float x,float p){return (.55/uRows)*(.8*sin(6.2832*1.1*x+5.*p)+.35*sin(6.2832*2.3*x-7.*p+1.7));}\n'+sh.fragmentShader
         .replace('#include <clipping_planes_fragment>',`#include <clipping_planes_fragment>
-          float ph=clamp((uBox.w-vLP.y)/(uBox.w-uBox.z),0.,.9999);
-          float rw=floor(ph*uRows);
           float xf=clamp((vLP.x-uBox.x)/(uBox.y-uBox.x),0.,1.);
-          if(mod(rw,2.)>.5)xf=1.-xf;
-          float pk=(rw+xf)/uRows;
+          float ph=clamp((uBox.w-vLP.y)/(uBox.w-uBox.z),0.,1.);
+          float phw=clamp(ph-flow(xf,ph),0.,.9999);
+          float rw=floor(phw*uRows);
+          float fy=fract(phw*uRows)-.5;
+          float xr=mod(rw,2.)>.5?1.-xf:xf;
+          float xs=clamp(xr+.3*fy+.48*fy*fy,0.,1.);
+          float br=fract(sin(dot(vec2(floor(fy*14.+7.),rw),vec2(12.9898,78.233)))*43758.5453);
+          float pk=(rw+xs)/uRows+(br-.5)*.006;
           if(pk>uProg)discard;`)
         .replace('#include <dithering_fragment>',`#include <dithering_fragment>
-          float wet=(1.-smoothstep(0.,.02,uProg-pk))*(1.-step(.999,uProg));
+          float wet=(1.-smoothstep(0.,.03,uProg-pk))*(1.-step(.999,uProg));
           gl_FragColor.rgb=mix(gl_FragColor.rgb,vec3(1.,.72,.4),wet*.55);`);  // fresh paint glistens
     };
     return c;
@@ -234,14 +238,20 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
   const V=new T.Vector3(),PARK=new T.Vector3(2.4,2.6,1.4);   // PARK = where the brush waits, off the model
   let gRef=null,zFront=0,sS=1;
 
-  // brush tip position (in obj space) for paint progress q
+  // the same flowing ribbons as the shader: centre line of stroke k at horizontal position x
+  const flow=(x,p)=>(.55/ROWS)*(.8*Math.sin(6.2832*1.1*x+5*p)+.35*Math.sin(6.2832*2.3*x-7*p+1.7));
+  const bandPh=(k,x)=>{let p=(k+.5)/ROWS;for(let i=0;i<4;i++)p=(k+.5)/ROWS+flow(x,p);return p};
+  let lean=1;const DIRv=new T.Vector3(),UPv=new T.Vector3(0,1,0);
+
+  // brush tip position (in obj space) for paint progress q; returns stroke direction (+1 right, -1 left)
   function tipAt(q){
     const b=PU.uBox.value,n=q*ROWS,k=Math.min(ROWS-1,Math.floor(n)),f=n-k;
     const xf=k%2?1-f:f;
-    const glide=k<ROWS-1?c01((f-.92)/.08):0;                  // drop to the next row at the end of a stroke
-    const row=k+.5+ease(glide),lift=Math.sin(Math.PI*glide)*.25;
-    V.set(b.x+(b.y-b.x)*xf, b.w-(row/ROWS)*(b.w-b.z), zFront+(.22+lift)/sS);   // hovers just in front of the model
+    const gl=k<ROWS-1?ease(c01((f-.9)/.1)):0;                    // curve round into the next stroke
+    const ph=bandPh(k,xf)*(1-gl)+bandPh(Math.min(ROWS-1,k+1),xf)*gl;
+    V.set(b.x+(b.y-b.x)*xf, b.w-ph*(b.w-b.z), zFront+(.22+Math.sin(Math.PI*gl)*.25)/sS);
     gRef.localToWorld(V);obj.worldToLocal(V);
+    return k%2?-1:1;
   }
 
   let h=0,t0=null;
@@ -290,13 +300,14 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
       top.constant=y;
       bot.constant=p>=1?-99:u*(hi-lo)*SLICE-y;
 
-      PU.uProg.value=q;
+      PU.uProg.value=q>=1?9:q;
       // brush arrives just before painting starts and leaves once it is done
       const mix=ease(c01((el-PRINT_SECONDS+.8)/.8))*(1-ease(c01((el-PRINT_SECONDS-PAINT_SECONDS)/1.2)));
       brush.visible=mix>.001&&!!gRef;
       if(brush.visible){
         obj.updateMatrixWorld(true);
-        tipAt(q);
+        const dir=tipAt(q);lean+=(dir-lean)*.06;                      // handle trails behind the stroke
+        DIRv.set(.5-.35*lean,.75,.55).normalize();brush.quaternion.setFromUnitVectors(UPv,DIRv);
         V.y+=Math.sin(now*.011)*.02;V.z+=Math.sin(now*.007)*.03;   // small hand tremor
         brush.position.copy(PARK).lerp(V,mix);
       }
