@@ -58,14 +58,12 @@ h2{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.03em;margin
 
 .art{height:210px;border-radius:4px;margin:0 0 22px;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);overflow:hidden;position:relative}
 .art canvas{width:100% !important;height:100% !important;outline:none}
-#custom-model-container{background:#2a231c;border-color:#2a231c}
 .art svg{height:88%;animation:fl 5s ease-in-out infinite alternate}
 @keyframes fl{to{transform:translateY(-8px)}}
 .tiles{display:grid;gap:10px;padding:22px;width:100%}
 .tile{aspect-ratio:1;background:var(--a);opacity:.2;animation:wave 2.6s ease-in-out infinite;animation-delay:calc(var(--i)*70ms)}
 .hex{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.fig{border-radius:50% 50% 14% 14%/62% 62% 14% 14%}
 @keyframes wave{50%{opacity:1;transform:scale(1.08)}}
-.wk{grid-template-columns:1fr}.wk .pr{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:36px;align-items:center}.wk .art{height:380px;margin:0}@media(max-width:720px){.wk .pr{grid-template-columns:1fr;gap:22px}.wk .art{height:280px}}
 .pr h3{font-size:1.6rem}.pr p{color:var(--mut);font-size:.95rem;margin-top:8px}
 .tag{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--line);border-radius:3px;color:var(--b);margin-bottom:12px}
 
@@ -116,13 +114,10 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px
 
 <section id="work">
   <div class="kick">02 — Selected projects</div><h2>Big builds, printed layer by layer.</h2>
-  <div class="g3 wk">
-    <article class="card pr rv">
-      <div class="art" id="custom-model-container" style="cursor:grab"></div>
-      <div><span class="tag">Bust · Resin</span>
-      <h3>Custom 3D Model</h3>
-      <p>An imported GLTF model rendered interactively. Drag to rotate the viewport in real-time.</p></div>
-    </article>
+  <div class="g3">
+    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(6,1fr)" data-grid="18" data-shape="hex"></div></div><span class="tag">18 models · Cosplay</span><h3>Devil Jinn Armour</h3><p>A full cosplay armour set split into 18 printed models, designed to assemble cleanly and look the part.</p></article>
+
+    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(9,1fr)" data-grid="27" data-shape="fig"></div></div><span class="tag">27 models · Figurines</span><h3>Spiritual Figurines</h3><p>A collection of 27 individually modelled figurines, printed as a consistent, display-ready series.</p></article>
 
 
   </div>
@@ -157,7 +152,6 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let mx=0,my=0;
@@ -170,159 +164,6 @@ $$('[data-to]').forEach(e=>co.observe(e));
 addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
 addEventListener('scroll',()=>{$('#bar').style.transform=`scaleX(${scrollY/(document.documentElement.scrollHeight-innerHeight)||0})`},{passive:true});
 $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.translate=`${(e.clientX-r.left-r.width/2)*.18}px ${(e.clientY-r.top-r.height/2)*.3}px`});b.addEventListener('pointerleave',()=>b.style.translate='')});
-
-/* ============================================================
-   CARD MODEL VIEWER (your-model.glb) — runs on its own, so a
-   problem in the hero wireframe below can never block it.
-   ============================================================ */
-(function(){
-  const MODEL_URL='your-model.glb';   // same folder as index.html
-  let modelRef=null,pending=null;
-  const USE_ORIGINAL_MATERIALS=false; // false = plain clay finish (always visible); true = keep the .glb's own materials
-  const box0=$('#custom-model-container');
-  if(!box0)return;
-  if(!window.THREE){console.error('three.js failed to load (cdnjs).');return}
-  if(!THREE.GLTFLoader){console.error('GLTFLoader.js failed to load (jsdelivr). Check the Network tab.');return}
-  if(!THREE.OrbitControls){console.error('OrbitControls.js failed to load (jsdelivr). Check the Network tab.');return}
-
-  const W=()=>box0.clientWidth||300,H=()=>box0.clientHeight||210;
-  const scene=new THREE.Scene();
-  const cam=new THREE.PerspectiveCamera(50,W()/H(),.1,100);
-  cam.position.set(0,0,3.5);
-
-  const ren=new THREE.WebGLRenderer({alpha:true,antialias:true});
-  ren.setSize(W(),H());
-  ren.setPixelRatio(Math.min(devicePixelRatio,2));
-  ren.outputEncoding=THREE.sRGBEncoding;
-  ren.setClearColor(0x2a231c,1);   // dark stage behind the model
-  box0.appendChild(ren.domElement);
-
-  const ctl=new THREE.OrbitControls(cam,ren.domElement);
-  ctl.enableDamping=true;
-  ctl.enableZoom=false;           // keeps mouse-wheel scrolling the page
-  ctl.autoRotate=true;
-  ctl.autoRotateSpeed=2;
-
-  scene.add(new THREE.AmbientLight(0xffffff,.8));
-  const key=new THREE.DirectionalLight(0xf2a65a,.9);key.position.set(5,5,5);scene.add(key);
-  const rim=new THREE.DirectionalLight(0x77aaff,.5);rim.position.set(-5,5,-5);scene.add(rim);
-  const fill=new THREE.DirectionalLight(0xffffff,.4);fill.position.set(0,-4,5);scene.add(fill);
-
-  // Placeholder, removed as soon as the real model has loaded
-  const placeholder=new THREE.Mesh(
-    new THREE.TorusKnotGeometry(.7,.2,100,16),
-    new THREE.MeshStandardMaterial({color:0xf2a65a,metalness:.5,roughness:.2})
-  );
-  scene.add(placeholder);
-
-  // Diagnostic: tells you what the server really returns for the file.
-  // A valid .glb starts with the 4 characters "glTF".
-  fetch(MODEL_URL).then(async res=>{
-    const buf=await res.arrayBuffer();
-    const head=new TextDecoder().decode(buf.slice(0,24));
-    console.log('[model] HTTP',res.status,'|',res.headers.get('content-type'),'|',buf.byteLength,'bytes | starts with',JSON.stringify(head));
-    if(head.startsWith('version https://git-lfs'))console.error('[model] This is a Git LFS pointer, not the real file.');
-    else if(head.trim().startsWith('<'))console.error('[model] Got an HTML page instead of a .glb (usually a 404).');
-    else if(!head.startsWith('glTF'))console.warn('[model] File does not start with "glTF". If it is a .gltf (JSON) file, that is fine.');
-  }).catch(e=>console.error('[model] Fetch failed. Opening index.html by double-click (file://) blocks this; use a local server or GitHub Pages.',e));
-
-  new THREE.GLTFLoader().load(
-    MODEL_URL,
-    gltf=>{
-      scene.remove(placeholder);
-      gltf.scene.updateMatrixWorld(true);
-
-      // Rebuild the model as plain static meshes in their rest pose.
-      // Rigged (skinned) exports can render at the wrong scale or get culled,
-      // and a still display piece does not need the skeleton.
-      const model=new THREE.Group();
-      let meshes=0,tris=0;
-      const seen=new Set();
-      const clay=new THREE.MeshStandardMaterial({color:0xf2a65a,roughness:.55,metalness:0,side:THREE.DoubleSide});
-      gltf.scene.traverse(o=>{
-        if(!o.isMesh||!o.geometry||!o.geometry.attributes.position)return;
-        const g=o.geometry.clone();
-        g.deleteAttribute('skinIndex');g.deleteAttribute('skinWeight');
-        g.applyMatrix4(o.matrixWorld);          // bake position + normals into world space
-        if(!g.attributes.normal)g.computeVertexNormals();
-        const src=[].concat(o.material||[]);
-        src.forEach(mt=>{if(seen.has(mt))return;seen.add(mt);
-          console.log('[model] material',JSON.stringify(mt.name||'(unnamed)'),'| colour #'+(mt.color?mt.color.getHexString():'none'),
-            '| map:',!!mt.map,'| opacity:',mt.opacity,'| transparent:',mt.transparent,
-            '| metalness:',mt.metalness,'| roughness:',mt.roughness)});
-        let mat=clay;
-        if(USE_ORIGINAL_MATERIALS){
-          const mats=src.map(mt=>{const c=mt.clone();c.skinning=false;c.side=THREE.DoubleSide;return c});
-          mat=Array.isArray(o.material)?mats:mats[0];
-        }
-        const mesh=new THREE.Mesh(g,mat);
-        mesh.frustumCulled=false;
-        model.add(mesh);
-        meshes++;tris+=(g.index?g.index.count:g.attributes.position.count)/3;
-      });
-
-      model.updateMatrixWorld(true);
-      const bb=new THREE.Box3().setFromObject(model);
-      const size=bb.getSize(new THREE.Vector3());
-      const centre=bb.getCenter(new THREE.Vector3());
-      const max=Math.max(size.x,size.y,size.z);
-      if(!isFinite(max)||max===0)console.error('[model] Could not measure the model (no mesh vertices found).');
-      const s=2/((isFinite(max)&&max)||1);              // fit to about 2 units
-      model.scale.setScalar(s);
-      model.position.copy(centre).multiplyScalar(-s);   // re-centre after scaling
-      scene.add(model);
-      if(/[?&]debug/.test(location.search)){scene.add(new THREE.BoxHelper(model,0xff00ff));scene.add(new THREE.AxesHelper(1.5));}
-      console.log('[model] Rebuilt',meshes,'meshes /',Math.round(tris),'triangles | size:',
-        size.x.toFixed(3),size.y.toFixed(3),size.z.toFixed(3),'| scale:',s.toFixed(3));
-
-      modelRef=model;
-      setTimeout(()=>{pending='shortly after load'},800);
-    },
-    undefined,
-    err=>console.error('[model] GLTFLoader error:',err)
-  );
-
-  // Reads the canvas right after a render and reports what is really on it
-  function report(label){
-    const gl=ren.getContext(),w=gl.drawingBufferWidth,h=gl.drawingBufferHeight,px=new Uint8Array(w*h*4);
-    gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,px);
-    let diff=0;
-    for(let i=0;i<px.length;i+=4)if(Math.abs(px[i]-42)>4||Math.abs(px[i+1]-35)>4||Math.abs(px[i+2]-28)>4)diff++;
-    let ndc='no model yet';
-    if(modelRef){
-      const b=new THREE.Box3().setFromObject(modelRef),v=new THREE.Vector3();
-      let x0=9,x1=-9,y0=9,y1=-9;
-      for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z]){
-        v.set(x,y,z).project(cam);x0=Math.min(x0,v.x);x1=Math.max(x1,v.x);y0=Math.min(y0,v.y);y1=Math.max(y1,v.y);
-      }
-      ndc=[x0,x1,y0,y1].map(n=>n.toFixed(2)).join(' ');
-    }
-    const card=box0.closest('.card'),rc=box0.getBoundingClientRect();
-    console.log('[model] probe:',label,
-      '| pixels differing from background:',(100*diff/(w*h)).toFixed(1)+'%',
-      '| model x0 x1 y0 y1 on screen (-1..1 = inside):',ndc,
-      '| card opacity:',card?getComputedStyle(card).opacity:'n/a',
-      '| canvas top/height in viewport:',Math.round(rc.top),Math.round(rc.height));
-  }
-
-  (function tick(){
-    requestAnimationFrame(tick);
-    ctl.update();
-    ren.render(scene,cam);
-    if(pending){const label=pending;pending=null;report(label)}
-  })();
-
-  // Probe again once the card has actually been scrolled into view
-  new IntersectionObserver((es,ob)=>{
-    if(es[0].isIntersecting){ob.disconnect();setTimeout(()=>{pending='card scrolled into view'},1500)}
-  },{threshold:.5}).observe(box0);
-
-  addEventListener('resize',()=>{
-    if(!box0.clientWidth)return;
-    cam.aspect=W()/H();cam.updateProjectionMatrix();
-    ren.setSize(W(),H());
-  });
-})();
 
 /* ============================================================
    HERO — your-model.glb prints layer by layer, then a brush
