@@ -191,8 +191,7 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
   const rim=new T.DirectionalLight(0xffffff,1.1);rim.position.set(-5,3,-4);sc.add(rim);
 
   const top=new T.Plane(new T.Vector3(0,-1,0),-99),bot=new T.Plane(new T.Vector3(0,1,0),99);
-  // matte black resin: dark colour, no emissive glow, high roughness so it never shines
-  const solid=new T.MeshStandardMaterial({color:0x17171a,emissive:0x000000,roughness:.78,metalness:0,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
+  const solid=new T.MeshStandardMaterial({color:0xe8923a,emissive:0x4a2306,roughness:.3,metalness:.05,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
   const glow=new T.MeshBasicMaterial({color:0xfff0cf,side:T.DoubleSide,clippingPlanes:[top,bot],polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
 
   /* ---- paint: a textured copy of the model that only exists where the brush has been ----
@@ -290,31 +289,10 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
     h=sz.y*s;
     brush.scale.setScalar((h/ROWS)/.2*.9);                          // bristle width matches one row
 
-    /* ---- base: two-tier dark plinth with an amber ring and a soft amber glow ---- */
-    const R=Math.hypot(sz.x,sz.z)*s/2+.4, y0=-h/2;   // y0 = top surface of the base (the model's feet)
-    const base=new T.Group();
-    const slab=(rad,hgt,yc,mat)=>{const mm=new T.Mesh(new T.CylinderGeometry(rad,rad,hgt,96),mat);mm.position.y=yc;base.add(mm)};
-
-    // lower lip: slightly wider satin step, gives the base a stacked plinth look
-    slab(R+.14,.1,y0-.19,new T.MeshStandardMaterial({color:0x2b2621,roughness:.45,metalness:.3}));
-    // main slab: glossy dark top that catches the key and rim lights
-    slab(R,.14,y0-.07,new T.MeshStandardMaterial({color:0x1b1713,roughness:.28,metalness:.25}));
-
-    // glowing amber ring inset into the top (matches the brand accent)
-    const ring=new T.Mesh(new T.TorusGeometry(R-.12,.018,12,128),new T.MeshBasicMaterial({color:0xf2a65a}));
-    ring.rotation.x=Math.PI/2;ring.position.y=y0+.004;base.add(ring);
-
-    // soft amber glow on the surface inside the ring
-    const cvs=document.createElement('canvas');cvs.width=cvs.height=256;
-    const cx=cvs.getContext('2d'),gr=cx.createRadialGradient(128,128,0,128,128,128);
-    gr.addColorStop(0,'rgba(242,166,90,.55)');gr.addColorStop(.6,'rgba(242,166,90,.12)');gr.addColorStop(1,'rgba(242,166,90,0)');
-    cx.fillStyle=gr;cx.fillRect(0,0,256,256);
-    const tex=new T.CanvasTexture(cvs);tex.encoding=T.sRGBEncoding;
-    const glowDisc=new T.Mesh(new T.PlaneGeometry((R-.12)*2,(R-.12)*2),new T.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,blending:T.AdditiveBlending}));
-    glowDisc.rotation.x=-Math.PI/2;glowDisc.position.y=y0+.002;base.add(glowDisc);
-
-    obj.add(base);
-    plateR=R+.14;size();                                         // +.14 so the mobile fit accounts for the wider lip; re-fit now that the real model size is known
+    const R=Math.hypot(sz.x,sz.z)*s/2+.4;
+    const plate=new T.Mesh(new T.CylinderGeometry(R,R,.16,72),new T.MeshStandardMaterial({color:0x6b6258,roughness:.8}));
+    plate.position.y=-h/2-.08;obj.add(plate);
+    plateR=R;size();                                             // re-fit now that the real model size is known
     t0=performance.now();
   },undefined,e=>console.warn('[hero] could not load '+MODEL_URL,e));
 
