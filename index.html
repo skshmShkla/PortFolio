@@ -56,11 +56,10 @@ h2{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.03em;margin
 .svc .ic{font-size:2rem;width:58px;height:58px;display:grid;place-items:center;border-radius:6px;background:var(--a);color:var(--on)}
 .price{display:block;margin-top:20px;font-weight:700}.price u{text-decoration:none;color:var(--b)}
 
-.art{height:210px;border-radius:4px;margin:0 0 22px;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);overflow:hidden; position: relative;}
-.art canvas { width: 100% !important; height: 100% !important; outline: none; }
+.art{height:210px;border-radius:4px;margin:0 0 22px;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);overflow:hidden;position:relative}
+.art canvas{width:100% !important;height:100% !important;outline:none}
 .art svg{height:88%;animation:fl 5s ease-in-out infinite alternate}
 @keyframes fl{to{transform:translateY(-8px)}}
-.scan{animation:scan 3s ease-in-out infinite alternate}@keyframes scan{to{transform:translateY(166px)}}
 .tiles{display:grid;gap:10px;padding:22px;width:100%}
 .tile{aspect-ratio:1;background:var(--a);opacity:.2;animation:wave 2.6s ease-in-out infinite;animation-delay:calc(var(--i)*70ms)}
 .hex{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.fig{border-radius:50% 50% 14% 14%/62% 62% 14% 14%}
@@ -117,15 +116,14 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px
   <div class="kick">02 — Selected projects</div><h2>Big builds, printed layer by layer.</h2>
   <div class="g3">
     <article class="card pr rv">
-      <!-- Replaced the SVG with a dedicated Three.js container -->
-      <div class="art" id="custom-model-container" style="cursor: grab;"></div>
+      <div class="art" id="custom-model-container" style="cursor:grab"></div>
       <span class="tag">Bust · Resin</span>
       <h3>Custom 3D Model</h3>
       <p>An imported GLTF model rendered interactively. Drag to rotate the viewport in real-time.</p>
     </article>
 
     <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(6,1fr)" data-grid="18" data-shape="hex"></div></div><span class="tag">18 models · Cosplay</span><h3>Devil Jinn Armour</h3><p>A full cosplay armour set split into 18 printed models, designed to assemble cleanly and look the part.</p></article>
-    
+
     <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(9,1fr)" data-grid="27" data-shape="fig"></div></div><span class="tag">27 models · Figurines</span><h3>Spiritual Figurines</h3><p>A collection of 27 individually modelled figurines, printed as a consistent, display-ready series.</p></article>
   </div>
 </section>
@@ -173,30 +171,121 @@ addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/inner
 addEventListener('scroll',()=>{$('#bar').style.transform=`scaleX(${scrollY/(document.documentElement.scrollHeight-innerHeight)||0})`},{passive:true});
 $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.translate=`${(e.clientX-r.left-r.width/2)*.18}px ${(e.clientY-r.top-r.height/2)*.3}px`});b.addEventListener('pointerleave',()=>b.style.translate='')});
 
+/* ============================================================
+   CARD MODEL VIEWER (your-model.glb) — runs on its own, so a
+   problem in the hero wireframe below can never block it.
+   ============================================================ */
+(function(){
+  const MODEL_URL='your-model.glb';   // same folder as index.html
+  const box0=$('#custom-model-container');
+  if(!box0)return;
+  if(!window.THREE){console.error('three.js failed to load (cdnjs).');return}
+  if(!THREE.GLTFLoader){console.error('GLTFLoader.js failed to load (jsdelivr). Check the Network tab.');return}
+  if(!THREE.OrbitControls){console.error('OrbitControls.js failed to load (jsdelivr). Check the Network tab.');return}
+
+  const W=()=>box0.clientWidth||300,H=()=>box0.clientHeight||210;
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(50,W()/H(),.1,100);
+  cam.position.set(0,0,3.5);
+
+  const ren=new THREE.WebGLRenderer({alpha:true,antialias:true});
+  ren.setSize(W(),H());
+  ren.setPixelRatio(Math.min(devicePixelRatio,2));
+  ren.outputEncoding=THREE.sRGBEncoding;
+  box0.appendChild(ren.domElement);
+
+  const ctl=new THREE.OrbitControls(cam,ren.domElement);
+  ctl.enableDamping=true;
+  ctl.enableZoom=false;           // keeps mouse-wheel scrolling the page
+  ctl.autoRotate=true;
+  ctl.autoRotateSpeed=2;
+
+  scene.add(new THREE.AmbientLight(0xffffff,.8));
+  const key=new THREE.DirectionalLight(0xf2a65a,.9);key.position.set(5,5,5);scene.add(key);
+  const rim=new THREE.DirectionalLight(0x77aaff,.5);rim.position.set(-5,5,-5);scene.add(rim);
+  const fill=new THREE.DirectionalLight(0xffffff,.4);fill.position.set(0,-4,5);scene.add(fill);
+
+  // Placeholder, removed as soon as the real model has loaded
+  const placeholder=new THREE.Mesh(
+    new THREE.TorusKnotGeometry(.7,.2,100,16),
+    new THREE.MeshStandardMaterial({color:0xf2a65a,metalness:.5,roughness:.2})
+  );
+  scene.add(placeholder);
+
+  // Diagnostic: tells you what the server really returns for the file.
+  // A valid .glb starts with the 4 characters "glTF".
+  fetch(MODEL_URL).then(async res=>{
+    const buf=await res.arrayBuffer();
+    const head=new TextDecoder().decode(buf.slice(0,24));
+    console.log('[model] HTTP',res.status,'|',res.headers.get('content-type'),'|',buf.byteLength,'bytes | starts with',JSON.stringify(head));
+    if(head.startsWith('version https://git-lfs'))console.error('[model] This is a Git LFS pointer, not the real file.');
+    else if(head.trim().startsWith('<'))console.error('[model] Got an HTML page instead of a .glb (usually a 404).');
+    else if(!head.startsWith('glTF'))console.warn('[model] File does not start with "glTF". If it is a .gltf (JSON) file, that is fine.');
+  }).catch(e=>console.error('[model] Fetch failed. Opening index.html by double-click (file://) blocks this; use a local server or GitHub Pages.',e));
+
+  new THREE.GLTFLoader().load(
+    MODEL_URL,
+    gltf=>{
+      scene.remove(placeholder);
+      const model=gltf.scene;
+      const bb=new THREE.Box3().setFromObject(model);
+      const size=bb.getSize(new THREE.Vector3());
+      const centre=bb.getCenter(new THREE.Vector3());
+      const s=2/(Math.max(size.x,size.y,size.z)||1);   // fit to about 2 units
+      model.scale.setScalar(s);
+      model.position.copy(centre).multiplyScalar(-s);   // re-centre after scaling
+      scene.add(model);
+      console.log('[model] Loaded. Original size:',size.x.toFixed(2),size.y.toFixed(2),size.z.toFixed(2));
+    },
+    undefined,
+    err=>console.error('[model] GLTFLoader error:',err)
+  );
+
+  (function tick(){
+    requestAnimationFrame(tick);
+    ctl.update();
+    ren.render(scene,cam);
+  })();
+
+  addEventListener('resize',()=>{
+    if(!box0.clientWidth)return;
+    cam.aspect=W()/H();cam.updateProjectionMatrix();
+    ren.setSize(W(),H());
+  });
+})();
+
+/* ============================================================
+   HERO WIREFRAME — decorative "live print" background
+   ============================================================ */
 (function(){
   if(!window.THREE)return;
-  
+
+  /* >>> PASTE YOUR MESH HERE <<<
+     Open your current index.html, find the line   const MESH={p:"t9cI/4Pz...
+     and copy the whole long string between the quotes over the text below.
+     Until you do, the hero simply shows no wireframe (everything else works). */
+  const MESH={p:"PASTE_BASE64_FROM_YOUR_CURRENT_FILE"};
+  const hasMesh=!MESH.p.startsWith('PASTE_');
+
   const T=THREE,cv=$('#gl'),r=new T.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
   r.setPixelRatio(Math.min(devicePixelRatio,2));r.localClippingEnabled=true;r.outputEncoding=T.sRGBEncoding;
   const sc=new T.Scene(),cam=new T.PerspectiveCamera(40,1,.1,50);
   const pl=new T.Plane(new T.Vector3(0,-1,0),0),pl2=new T.Plane(new T.Vector3(0,1,0),0);
   const obj=new T.Group(),m=new T.Group();obj.add(m);sc.add(obj);
-  
-  // Decoding the original complex shape array logic (kept exactly as in your original script)
   const A=-1.7;
-  const MESH={p:"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"
-  };
 
-  const geo=new T.BufferGeometry();
-  const ab=atob(MESH.p),ba=new Uint8Array(ab.length);
-  for(let i=0;i<ab.length;i++)ba[i]=ab.charCodeAt(i);
-  const f32=new Float32Array(ba.buffer);
-  geo.setAttribute('position',new T.BufferAttribute(f32,3));
-  const mat=new T.MeshBasicMaterial({color:0x6b6258,wireframe:true,transparent:true,opacity:.08});
-  const ms=new T.Mesh(geo,mat);
-  ms.scale.setScalar(40);
-  m.add(ms);
-  
+  if(hasMesh){
+    const geo=new T.BufferGeometry();
+    const ab=atob(MESH.p),ba=new Uint8Array(ab.length);
+    for(let i=0;i<ab.length;i++)ba[i]=ab.charCodeAt(i);
+    const f32=new Float32Array(ba.buffer);
+    geo.setAttribute('position',new T.BufferAttribute(f32,3));
+    const mat=new T.MeshBasicMaterial({color:0x6b6258,wireframe:true,transparent:true,opacity:.08});
+    const ms=new T.Mesh(geo,mat);
+    ms.scale.setScalar(40);
+    m.add(ms);
+  }
+
   let frame=0;
   const pEl=$('#layer'),pBEl=$('#prog');
 
@@ -206,118 +295,30 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
     m.rotation.y=t*.2;m.rotation.x=Math.sin(t*.5)*.2;
     obj.position.x+=(mx*2-obj.position.x)*.05;
     obj.position.y+=(-my*2-obj.position.y)*.05;
-    
+
     const cl=A+Math.sin(t*.5)*2.5;
     pl.constant=-cl;pl2.constant=cl+.02;
     r.clippingPlanes=[pl,pl2];
-    
+
     if(frame%6===0){
       const lp=(Math.max(0,Math.min(1,(cl+2.5)/5))*100);
       pEl.textContent=Math.floor(lp*10).toString().padStart(3,'0');
       pBEl.style.width=lp+'%';
     }
-    
+
     cam.position.z=7;cam.position.x=3;
     cam.lookAt(0,0,0);
     r.render(sc,cam);
     requestAnimationFrame(render);
   }
-  
-  window.addEventListener('resize',()=>{
+
+  addEventListener('resize',()=>{
     cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();
     r.setSize(innerWidth,innerHeight);
   });
+  cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();
   r.setSize(innerWidth,innerHeight);
   render();
-
-  const modelContainer = document.getElementById('custom-model-container');
-  if (modelContainer && window.THREE && THREE.GLTFLoader) {
-    
-    // Create new scene exclusively for the card container
-    const bScene = new THREE.Scene();
-    const bCamera = new THREE.PerspectiveCamera(50, modelContainer.clientWidth / modelContainer.clientHeight, 0.1, 100);
-    bCamera.position.set(0, 0, 3.5);
-
-    const bRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    bRenderer.setSize(modelContainer.clientWidth, modelContainer.clientHeight);
-    bRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    bRenderer.outputEncoding = THREE.sRGBEncoding;
-    modelContainer.appendChild(bRenderer.domElement);
-
-    // Orbit controls for interactivity
-    const bControls = new THREE.OrbitControls(bCamera, bRenderer.domElement);
-    bControls.enableDamping = true;
-    bControls.enableZoom = false; // Important: Prevents mouse wheel scrolling from breaking page flow
-    bControls.autoRotate = true;
-    bControls.autoRotateSpeed = 2.0;
-
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    bScene.add(ambientLight);
-    
-    const dirLight = new THREE.DirectionalLight(0xf2a65a, 0.8);
-    dirLight.position.set(5, 5, 5);
-    bScene.add(dirLight);
-    
-    const backLight = new THREE.DirectionalLight(0x77aaff, 0.5);
-    backLight.position.set(-5, 5, -5);
-    bScene.add(backLight);
-
-    // Placeholder Mesh (Shown until your actual GLTF/GLB loads)
-    const placeholderGeo = new THREE.TorusKnotGeometry(0.7, 0.2, 100, 16);
-    const placeholderMat = new THREE.MeshStandardMaterial({ 
-      color: 0xf2a65a, 
-      metalness: 0.5, 
-      roughness: 0.2 
-    });
-    const placeholderMesh = new THREE.Mesh(placeholderGeo, placeholderMat);
-    bScene.add(placeholderMesh);
-
-    // Instance of GLTF loader
-    const loader = new THREE.GLTFLoader();
-
-    // ---------------------------------------------------------
-    // IMPORTANT: Replace 'your-model.glb' with the actual path 
-    // to your 3D model file (e.g. 'models/my-sculpt.glb').
-    // ---------------------------------------------------------
-    loader.load(
-      'your-model.glb',
-      function (gltf) {
-        // Once successfully loaded, remove the placeholder shape
-        bScene.remove(placeholderMesh); 
-        
-        const model = gltf.scene;
-        
-        // Center the model dynamically based on its bounding box
-        const box = new THREE.Box3().setFromObject(model);
-        const center = box.getCenter(new THREE.Vector3());
-        model.position.sub(center); 
-        
-        // Add the loaded model to the specific scene
-        bScene.add(model);
-      }, 
-      undefined, 
-      function (error) {
-        console.warn('Custom model not found. Showing placeholder. Update "your-model.glb" path in the code.');
-      }
-    );
-
-    function animateModel() {
-      requestAnimationFrame(animateModel);
-      bControls.update();
-      bRenderer.render(bScene, bCamera);
-    }
-    animateModel();
-
-    // Keep the canvas responsive if the window resizes
-    window.addEventListener('resize', () => {
-      if (modelContainer.clientWidth === 0) return; // Prevent collapse errors
-      bCamera.aspect = modelContainer.clientWidth / modelContainer.clientHeight;
-      bCamera.updateProjectionMatrix();
-      bRenderer.setSize(modelContainer.clientWidth, modelContainer.clientHeight);
-    });
-  }
-
 })();
 </script>
 </body>
