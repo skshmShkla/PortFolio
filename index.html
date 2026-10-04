@@ -3,40 +3,35 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Saksham (Lumenrift): resin 3D printing, Blender modelling, sculpting and cosplay armour, shipped worldwide.">
-<title>Saksham · Lumenrift — Resin 3D Printing, Sculpting & Modelling</title>
+<meta name="description" content="Lumenrift: resin 3D printing, Blender modelling, sculpting and cosplay armour, shipped worldwide.">
+<title>Lumenrift — Resin 3D Printing, Sculpting & Modelling</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#efe9df;--fg:#1c1814;--mut:#6b6258;--card:rgba(255,251,244,.7);--line:rgba(28,24,20,.15);--a:#c4491a;--b:#86581c;--on:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14110e;--fg:#f2eadd;--mut:#a39888;--card:rgba(255,242,220,.045);--line:rgba(255,238,210,.13);--a:#ff8a3d;--b:#d9a441;--on:#1a120a}}
-:root[data-theme="dark"]{--bg:#14110e;--fg:#f2eadd;--mut:#a39888;--card:rgba(255,242,220,.045);--line:rgba(255,238,210,.13);--a:#ff8a3d;--b:#d9a441;--on:#1a120a}
+:root{color-scheme:light;--bg:#f7f4ee;--fg:#1c1814;--mut:#6b6258;--surface:#fffdf9;--line:#e0d9cc;--a:#f2a65a;--b:#8a5a1c;--on:#1c1814;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth;scroll-padding-top:calc(70px + env(safe-area-inset-top,0px))}
 body{background:var(--bg);color:var(--fg);font:400 1rem/1.65 Manrope,system-ui,sans-serif;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(40vw 40vw at 15% 20%,color-mix(in srgb,var(--a) 22%,transparent),transparent),radial-gradient(35vw 35vw at 85% 70%,color-mix(in srgb,var(--b) 18%,transparent),transparent);animation:drift 18s ease-in-out infinite alternate}
-@keyframes drift{to{transform:translate(-3vw,4vh) scale(1.15)}}
 a{color:inherit;text-decoration:none}
 h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.05}
 .bar{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--a);z-index:60}
-.glow{position:fixed;left:-150px;top:-150px;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,color-mix(in srgb,var(--b) 22%,transparent),transparent 65%);transition:transform .25s ease-out}
-nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 5vw 14px;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 60%,transparent);border-bottom:1px solid var(--line)}
-nav b{font:800 1.2rem Fraunces,Georgia,serif;letter-spacing:-.02em}nav b span{color:var(--a)}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 5vw 14px;background:var(--bg);border-bottom:1px solid var(--line)}
+nav b{font:800 1.2rem Fraunces,Georgia,serif;letter-spacing:-.02em}nav b span{color:var(--b)}
 nav div{display:flex;gap:26px;align-items:center;font-size:.9rem;color:var(--mut)}
 nav div a:hover{color:var(--fg)}
-.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:99px;font-weight:700;border:1px solid var(--line);transition:transform .25s,box-shadow .25s}
-.btn.p{background:var(--a);color:var(--on);border:0;box-shadow:0 8px 30px -8px var(--a)}
-.btn{transition:transform .25s,box-shadow .25s,translate .2s ease-out}.btn:hover{transform:scale(1.04)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:4px;font-weight:700;border:1px solid var(--fg);transition:transform .25s,box-shadow .25s}
+.btn.p{background:var(--a);color:var(--on);border-color:var(--a)}
+.btn{transition:transform .25s,box-shadow .25s,translate .2s ease-out}.btn:hover{transform:translateY(-2px)}
 section{padding:clamp(70px,13vh,130px) 5vw;max-width:1280px;margin:auto;position:relative;z-index:1}
 .hero{max-width:none;min-height:100svh;display:grid;align-items:center;padding-top:110px;overflow:hidden}
 #gl{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.hc{position:relative;z-index:2;max-width:640px;pointer-events:none}.hc a{pointer-events:auto}
+.hc{position:relative;z-index:2;max-width:720px;pointer-events:none}.hc a{pointer-events:auto}
 .eb{display:inline-flex;gap:10px;align-items:center;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:22px}
 .eb i{width:8px;height:8px;border-radius:50%;background:var(--b);box-shadow:0 0 0 0 var(--b);animation:ping 2s infinite}
 @keyframes ping{70%{box-shadow:0 0 0 12px transparent}}
-h1{font-size:clamp(2.7rem,7.2vw,6.2rem);font-weight:800;letter-spacing:-.04em}
+h1{font-size:clamp(2.6rem,6.2vw,5.4rem);font-weight:800;letter-spacing:-.04em}
 .w{display:inline-block;animation:up .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*.09s + .2s)}
 @keyframes up{from{opacity:0;transform:translateY(60%) rotate(4deg)}}
-h1 em{font-style:normal;color:var(--a)}
+h1 em{font-style:normal;color:var(--on);background:var(--a);padding:0 .12em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .sub{margin:24px 0 34px;font-size:1.12rem;color:var(--mut);max-width:520px}
 .cta{display:flex;gap:14px;flex-wrap:wrap}
 .hud{position:absolute;z-index:2;right:5vw;bottom:calc(32px + env(safe-area-inset-bottom,0px));font:500 .78rem ui-monospace,Menlo,monospace;color:var(--mut);text-align:right;letter-spacing:.08em}
@@ -46,31 +41,30 @@ h1 em{font-style:normal;color:var(--a)}
 .mq div{display:inline-block;animation:mq 32s linear infinite;color:transparent;-webkit-text-stroke:1px var(--mut)}.mq span{color:var(--a);-webkit-text-stroke:0}
 @keyframes mq{to{transform:translateX(-50%)}}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px}
-.stats .card{text-align:center}.stats b{font:800 clamp(2.4rem,5vw,3.8rem) Fraunces,Georgia,serif;color:var(--a)}
+.stats .card{text-align:center}.stats b{font:800 clamp(2.4rem,5vw,3.8rem) Fraunces,Georgia,serif;color:var(--fg);box-shadow:inset 0 -.2em 0 var(--a)}
 .stats small{display:block;color:var(--mut);font-size:.85rem}
-.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;backdrop-filter:blur(14px);overflow:hidden;transition:transform .15s ease-out,opacity .9s,translate .9s}
-.card::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(280px circle at var(--mx,50%) var(--my,0),color-mix(in srgb,var(--a) 30%,transparent),transparent 70%);opacity:0;transition:opacity .3s}.card:hover::before{opacity:1}
+.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:28px;overflow:hidden;transition:transform .3s ease-out,border-color .3s,opacity .9s,translate .9s}.card:hover{border-color:var(--b);transform:translateY(-4px)}
 .rv{opacity:0;translate:0 40px}.rv.in{opacity:1;translate:0 0}
-.kick{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--b);margin-bottom:12px}
+.kick{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--b);margin-bottom:28px;padding-top:14px;border-top:1px solid var(--fg)}
 h2{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.03em;margin-bottom:46px;max-width:760px}
 .g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
 .svc h3{font-size:1.5rem;margin:14px 0 8px}.svc p{color:var(--mut);font-size:.95rem}
-.svc .ic{font-size:2rem;width:58px;height:58px;display:grid;place-items:center;border-radius:16px;background:var(--a);color:var(--on)}
+.svc .ic{font-size:2rem;width:58px;height:58px;display:grid;place-items:center;border-radius:6px;background:var(--a);color:var(--on)}
 .price{display:block;margin-top:20px;font-weight:700}.price u{text-decoration:none;color:var(--b)}
-.art{height:210px;border-radius:16px;margin:-6px -6px 22px;display:grid;place-items:center;background:color-mix(in srgb,var(--fg) 5%,transparent);overflow:hidden}
-.art svg{height:88%;filter:drop-shadow(0 10px 30px color-mix(in srgb,var(--a) 50%,transparent));animation:fl 5s ease-in-out infinite alternate}
+.art{height:210px;border-radius:4px;margin:0 0 22px;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.art svg{height:88%;animation:fl 5s ease-in-out infinite alternate}
 @keyframes fl{to{transform:translateY(-8px)}}
 .scan{animation:scan 3s ease-in-out infinite alternate}@keyframes scan{to{transform:translateY(166px)}}
 .tiles{display:grid;gap:10px;padding:22px;width:100%}
-.tile{aspect-ratio:1;background:linear-gradient(135deg,var(--a),var(--b));opacity:.2;animation:wave 2.6s ease-in-out infinite;animation-delay:calc(var(--i)*70ms)}
+.tile{aspect-ratio:1;background:var(--a);opacity:.2;animation:wave 2.6s ease-in-out infinite;animation-delay:calc(var(--i)*70ms)}
 .hex{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.fig{border-radius:50% 50% 14% 14%/62% 62% 14% 14%}
 @keyframes wave{50%{opacity:1;transform:scale(1.08)}}
 .pr h3{font-size:1.6rem}.pr p{color:var(--mut);font-size:.95rem;margin-top:8px}
-.tag{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--line);border-radius:99px;color:var(--b);margin-bottom:12px}
+.tag{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--line);border-radius:3px;color:var(--b);margin-bottom:12px}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;counter-reset:s}
 .steps .card{counter-increment:s}.steps .card::after{content:"0" counter(s);position:absolute;right:18px;top:6px;font:800 3.4rem Fraunces,Georgia,serif;color:var(--line)}
 .steps h3{font-size:1.15rem;margin-bottom:8px}.steps p{color:var(--mut);font-size:.9rem}
-.rev p{font-size:1.02rem}.rev small{display:block;margin-top:18px;color:var(--mut)}.rev .st{color:var(--a);letter-spacing:.2em;margin-bottom:10px}
+.rev p{font-size:1.02rem}.rev small{display:block;margin-top:18px;color:var(--mut)}.rev .st{color:var(--b);letter-spacing:.2em;margin-bottom:10px}
 .end{text-align:center}.end h2{margin:0 auto 20px;max-width:900px}.end p{color:var(--mut);margin-bottom:34px}.end .cta{justify-content:center}
 footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px}
 @media(max-width:720px){nav div a:not(.btn){display:none}.hud{display:none}.hero{align-items:end;padding-bottom:60px}}
@@ -78,75 +72,75 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px
 </style>
 </head>
 <body>
-<div class="bar" id="bar"></div><div class="glow" id="glow"></div>
+<div class="bar" id="bar"></div>
 <nav><b>lumen<span>rift</span></b><div><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Hire me</a></div></nav>
 
 <section class="hero" id="top">
-  <canvas id="gl"></canvas>
-  <div class="hc">
-    <div class="eb"><i></i>Resin 3D printing · Sculpting · Cosplay</div>
-    <h1><span class="w" style="--i:0">I</span> <span class="w" style="--i:1">turn</span> <span class="w" style="--i:2">pixels</span> <span class="w" style="--i:3">into</span> <em class="w" style="--i:4">printed reality.</em></h1>
-    <p class="sub">Hi, I'm Saksham. I model, sculpt and resin-print custom collectibles, cosplay armour and prototypes in India, then pack and ship them worldwide.</p>
-    <div class="cta"><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Start a project →</a><a class="btn" href="#work">See my work</a></div>
-  </div>
-  <div class="hud">LIVE RESIN PRINT<strong>LAYER <span id="layer">000</span></strong><div><i id="prog"></i></div></div>
+  <canvas id="gl"></canvas>
+  <div class="hc">
+    <div class="eb"><i></i>Resin 3D printing · Sculpting · Cosplay</div>
+    <h1><span class="w" style="--i:0">I</span> <span class="w" style="--i:1">turn</span> <span class="w" style="--i:2">your</span> <span class="w" style="--i:3">imagination</span> <span class="w" style="--i:4">into</span> <em><span class="w" style="--i:5">something</span> <span class="w" style="--i:6">you</span> <span class="w" style="--i:7">can</span> <span class="w" style="--i:8">hold.</span></em></h1>
+    <p class="sub">Lumenrift is a resin 3D printing and sculpting studio in India. Custom collectibles, cosplay armour and prototypes, modelled, printed and shipped worldwide.</p>
+    <div class="cta"><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Start a project →</a><a class="btn" href="#work">See my work</a></div>
+  </div>
+  <div class="hud">LIVE RESIN PRINT<strong>LAYER <span id="layer">000</span></strong><div><i id="prog"></i></div></div>
 </section>
 
 <div class="mq"><div id="mq">RESIN PRINTING <span>✦</span> BLENDER <span>✦</span> SCULPTING <span>✦</span> PROTOTYPING <span>✦</span> COSPLAY ARMOUR <span>✦</span> COLLECTIBLES <span>✦</span> WORLDWIDE SHIPPING <span>✦</span> </div></div>
 
 <section>
-  <div class="stats">
-    <div class="card rv"><span class="n"><b data-to="5" data-d="1">0</b></span><small>Fiverr rating</small></div>
-    <div class="card rv"><span class="n"><b data-to="10">0</b></span><small>5-star reviews</small></div>
-    <div class="card rv"><span class="n"><b data-to="45">0</b>+</span><small>models in big projects</small></div>
-    <div class="card rv"><span class="n"><b data-to="2">0</b>h</span><small>average response</small></div>
-  </div>
+  <div class="stats">
+    <div class="card rv"><span class="n"><b data-to="5" data-d="1">0</b></span><small>Client rating</small></div>
+    <div class="card rv"><span class="n"><b data-to="10">0</b></span><small>5-star reviews</small></div>
+    <div class="card rv"><span class="n"><b data-to="45">0</b>+</span><small>models in big projects</small></div>
+    <div class="card rv"><span class="n"><b data-to="2">0</b>h</span><small>average response</small></div>
+  </div>
 </section>
 
 <section id="services">
-  <div class="kick">What I do</div><h2>From a rough idea to a finished piece in your hands.</h2>
-  <div class="g3">
-    <div class="card svc rv"><div class="ic">◈</div><h3>Resin 3D Printing</h3><p>High-detail resin prints of collectibles, custom models or anything else you send my way, with painting available.</p><span class="price">From <u>$10</u> / project</span></div>
-    <div class="card svc rv"><div class="ic">⚔</div><h3>Resin Cosplay</h3><p>Wearable, display-ready cosplay pieces and armour sets, printed in sections and finished to fit your build.</p><span class="price">From <u>$30</u> / project</span></div>
-    <div class="card svc rv"><div class="ic">✺</div><h3>Modelling & Sculpting</h3><p>Custom 3D models and sculpts in Blender, plus prototyping so your idea is print-ready from day one.</p><span class="price">Blender expert</span></div>
-  </div>
+  <div class="kick">01 — What I do</div><h2>From a rough idea to a finished piece in your hands.</h2>
+  <div class="g3">
+    <div class="card svc rv"><div class="ic">◈</div><h3>Resin 3D Printing</h3><p>High-detail resin prints of collectibles, custom models or anything else you send my way, with painting available.</p><span class="price">From <u>$10</u> / project</span></div>
+    <div class="card svc rv"><div class="ic">⚔</div><h3>Resin Cosplay</h3><p>Wearable, display-ready cosplay pieces and armour sets, printed in sections and finished to fit your build.</p><span class="price">From <u>$30</u> / project</span></div>
+    <div class="card svc rv"><div class="ic">✺</div><h3>Modelling & Sculpting</h3><p>Custom 3D models and sculpts in Blender, plus prototyping so your idea is print-ready from day one.</p><span class="price">Blender expert</span></div>
+  </div>
 </section>
 
 <section id="work">
-  <div class="kick">Selected projects</div><h2>Big builds, printed layer by layer.</h2>
-  <div class="g3">
-    <article class="card pr rv"><div class="art"><svg viewBox="0 0 200 170"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--a)"/><stop offset="1" style="stop-color:var(--b)"/></linearGradient></defs><path fill="url(#g)" d="M100 12c24 0 38 20 36 44-1 14-6 24-14 32l-2 12c26 6 56 14 60 70H20c4-56 34-64 60-70l-2-12c-8-8-13-18-14-32-2-24 12-44 36-44z"/><rect class="scan" x="0" y="0" width="200" height="2" fill="#fff"/></svg></div><span class="tag">Bust · Resin</span><h3>Homelander Bust</h3><p>A large-format character bust, modelled and printed in resin with a focus on crisp facial detail.</p></article>
-    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(6,1fr)" data-grid="18" data-shape="hex"></div></div><span class="tag">18 models · Cosplay</span><h3>Devil Jinn Armour</h3><p>A full cosplay armour set split into 18 printed models, designed to assemble cleanly and look the part.</p></article>
-    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(9,1fr)" data-grid="27" data-shape="fig"></div></div><span class="tag">27 models · Figurines</span><h3>Spiritual Figurines</h3><p>A collection of 27 individually modelled figurines, printed as a consistent, display-ready series.</p></article>
-  </div>
+  <div class="kick">02 — Selected projects</div><h2>Big builds, printed layer by layer.</h2>
+  <div class="g3">
+    <article class="card pr rv"><div class="art"><svg viewBox="0 0 200 170"><path style="fill:var(--a)" d="M100 12c24 0 38 20 36 44-1 14-6 24-14 32l-2 12c26 6 56 14 60 70H20c4-56 34-64 60-70l-2-12c-8-8-13-18-14-32-2-24 12-44 36-44z"/><rect class="scan" x="0" y="0" width="200" height="2" fill="#fff"/></svg></div><span class="tag">Bust · Resin</span><h3>Homelander Bust</h3><p>A large-format character bust, modelled and printed in resin with a focus on crisp facial detail.</p></article>
+    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(6,1fr)" data-grid="18" data-shape="hex"></div></div><span class="tag">18 models · Cosplay</span><h3>Devil Jinn Armour</h3><p>A full cosplay armour set split into 18 printed models, designed to assemble cleanly and look the part.</p></article>
+    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(9,1fr)" data-grid="27" data-shape="fig"></div></div><span class="tag">27 models · Figurines</span><h3>Spiritual Figurines</h3><p>A collection of 27 individually modelled figurines, printed as a consistent, display-ready series.</p></article>
+  </div>
 </section>
 
 <section id="process">
-  <div class="kick">How it works</div><h2>Simple, transparent, fast.</h2>
-  <div class="steps">
-    <div class="card rv"><h3>Brief</h3><p>Send me your idea, reference or file. I reply within hours.</p></div>
-    <div class="card rv"><h3>Model</h3><p>I model or sculpt in Blender, or prep your existing file for resin.</p></div>
-    <div class="card rv"><h3>Print</h3><p>Sliced, supported and printed in high-detail resin.</p></div>
-    <div class="card rv"><h3>Finish</h3><p>Washed, cured, cleaned up and painted if you want it.</p></div>
-    <div class="card rv"><h3>Ship</h3><p>Safely packaged and sent internationally.</p></div>
-  </div>
+  <div class="kick">03 — How it works</div><h2>Simple, transparent, fast.</h2>
+  <div class="steps">
+    <div class="card rv"><h3>Brief</h3><p>Send me your idea, reference or file. I reply within hours.</p></div>
+    <div class="card rv"><h3>Model</h3><p>I model or sculpt in Blender, or prep your existing file for resin.</p></div>
+    <div class="card rv"><h3>Print</h3><p>Sliced, supported and printed in high-detail resin.</p></div>
+    <div class="card rv"><h3>Finish</h3><p>Washed, cured, cleaned up and painted if you want it.</p></div>
+    <div class="card rv"><h3>Ship</h3><p>Safely packaged and sent internationally.</p></div>
+  </div>
 </section>
 
 <section id="reviews">
-  <div class="kick">Client love</div><h2>Rated 5.0 by every client so far.</h2>
-  <div class="g3">
-    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great artist, he's so good at what he does… it came out amazingly. Highly recommended."</p><small>oluwaseun3413 · United States</small></div>
-    <div class="card rev rv"><div class="st">★★★★★</div><p>"Communicates better, fast and assuring responses, reliable feedback, work that satisfies your needs, and professionalism."</p><small>oluwaseun3413 · United States</small></div>
-    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great. Very pleased with this. Thank you."</p><small>jdoherty1976 · United Kingdom</small></div>
-    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great as always. Thanks!"</p><small>jdoherty1976 · United Kingdom, repeat client</small></div>
-  </div>
+  <div class="kick">04 — Client love</div><h2>Rated 5.0 by every client so far.</h2>
+  <div class="g3">
+    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great artist, he's so good at what he does… it came out amazingly. Highly recommended."</p><small>oluwaseun3413 · United States</small></div>
+    <div class="card rev rv"><div class="st">★★★★★</div><p>"Communicates better, fast and assuring responses, reliable feedback, work that satisfies your needs, and professionalism."</p><small>oluwaseun3413 · United States</small></div>
+    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great. Very pleased with this. Thank you."</p><small>jdoherty1976 · United Kingdom</small></div>
+    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great as always. Thanks!"</p><small>jdoherty1976 · United Kingdom, repeat client</small></div>
+  </div>
 </section>
 
 <section class="end">
-  <h2>Got a model in mind? Let's make it real.</h2><p>Replies within 12 hours · International shipping · Packaging included</p>
-  <div class="cta"><a class="btn p" href="https://www.fiverr.com/conversations/lumenrift" target="_blank" rel="noopener">Message me on Fiverr →</a><a class="btn" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">View Fiverr profile</a></div>
+  <h2>Got a model in mind? Let's make it real.</h2><p>Replies within 12 hours · International shipping · Packaging included</p>
+  <div class="cta"><a class="btn p" href="https://www.fiverr.com/conversations/lumenrift" target="_blank" rel="noopener">Start a conversation →</a><a class="btn" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">See full portfolio</a></div>
 </section>
-<footer>© Saksham · @lumenrift · English, Hindi · India</footer>
+<footer>© Lumenrift · English, Hindi · India</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -158,10 +152,9 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 $$('.rv').forEach((e,i)=>{e.style.transitionDelay=(i%5)*70+'ms';io.observe(e)});
 const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);const el=e.target,t=+el.dataset.to,d=+el.dataset.d||0,s=performance.now();(function f(n){const p=Math.min(1,(n-s)/1600);el.textContent=(t*(1-Math.pow(1-p,3))).toFixed(d);if(p<1)requestAnimationFrame(f)})(s)}));
 $$('[data-to]').forEach(e=>co.observe(e));
-addEventListener('pointermove',e=>{$('#glow').style.transform=`translate(${e.clientX}px,${e.clientY}px)`;mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
 addEventListener('scroll',()=>{$('#bar').style.transform=`scaleX(${scrollY/(document.documentElement.scrollHeight-innerHeight)||0})`},{passive:true});
 $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.translate=`${(e.clientX-r.left-r.width/2)*.18}px ${(e.clientY-r.top-r.height/2)*.3}px`});b.addEventListener('pointerleave',()=>b.style.translate='')});
-$$('.card').forEach(c=>{c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;c.style.setProperty('--mx',x+'px');c.style.setProperty('--my',y+'px');c.style.transform=`perspective(900px) rotateX(${(.5-y/r.height)*7}deg) rotateY(${(x/r.width-.5)*7}deg) translateY(-4px)`});c.addEventListener('pointerleave',()=>c.style.transform='')});
 
 (function(){
 if(!window.THREE)return;
@@ -173,13 +166,13 @@ const obj=new T.Group(),m=new T.Group();obj.add(m);sc.add(obj);
 const A=-1.7;
 /*PETALS*/
 function petal(th,y0,r0,L,W,a0,k,cup){
- const U=28,V=10,pos=[],idx=[],c=[];let rho=r0,y=y0;
- for(let i=0;i<=U;i++){const a=a0+k*i/U;c.push([rho,y,a]);rho+=L/U*Math.sin(a);y+=L/U*Math.cos(a)}
- for(let i=0;i<=U;i++){const u=i/U,q=c[i],w=W*Math.sin(Math.PI*Math.pow(u,.65))*(1-.2*u);
-  for(let j=0;j<=V;j++){const v=j/V*2-1,o=v*v*w*cup,rr=q[0]-Math.cos(q[2])*o,yy=q[1]+Math.sin(q[2])*o,l=v*w;
-   pos.push(Math.cos(th)*rr-Math.sin(th)*l,yy,Math.sin(th)*rr+Math.cos(th)*l)}}
- for(let i=0;i<U;i++)for(let j=0;j<V;j++){const a=i*(V+1)+j,b=a+V+1;idx.push(a,b,a+1,b,b+1,a+1)}
- return{pos,idx}}
+ const U=28,V=10,pos=[],idx=[],c=[];let rho=r0,y=y0;
+ for(let i=0;i<=U;i++){const a=a0+k*i/U;c.push([rho,y,a]);rho+=L/U*Math.sin(a);y+=L/U*Math.cos(a)}
+ for(let i=0;i<=U;i++){const u=i/U,q=c[i],w=W*Math.sin(Math.PI*Math.pow(u,.65))*(1-.2*u);
+  for(let j=0;j<=V;j++){const v=j/V*2-1,o=v*v*w*cup,rr=q[0]-Math.cos(q[2])*o,yy=q[1]+Math.sin(q[2])*o,l=v*w;
+   pos.push(Math.cos(th)*rr-Math.sin(th)*l,yy,Math.sin(th)*rr+Math.cos(th)*l)}}
+ for(let i=0;i<U;i++)for(let j=0;j<V;j++){const a=i*(V+1)+j,b=a+V+1;idx.push(a,b,a+1,b,b+1,a+1)}
+ return{pos,idx}}
 const P=[],I=[];
 [[10,0,1.25,-.55,1.9,.55,.5],[9,.5,1.0,-.5,1.85,.5,.5],[8,0,.72,-.45,1.8,.46,.55],[7,.5,.45,-.35,1.75,.42,.6],[6,0,.2,-.1,1.9,.38,.8]].forEach((d,li)=>{for(let s=0;s<d[0];s++){const g=petal((s+d[1])/d[0]*Math.PI*2,A+.12+li*.1,.15,d[4],d[5],d[2],d[3],d[6]);const o=P.length/3;g.pos.forEach(x=>P.push(x));g.idx.forEach(x=>I.push(x+o))}});
 /*END*/
@@ -187,29 +180,26 @@ const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32Buffer
 const top=geo.boundingBox.max.y+.04,H=top-A,mid=(A+top)/2;m.position.y=-mid;
 const R=new Float32Array(400).fill(.3);for(let i=0;i<P.length;i+=3){const b=Math.floor((P[i+1]-A)/.04);R[b]=Math.max(R[b],Math.hypot(P[i],P[i+2]))}
 const rad=y=>{const b=Math.floor((y-A)/.04);let q=.3;for(let d=-3;d<=3;d++)q=Math.max(q,R[b+d]||0);return q};
-m.add(new T.Mesh(geo,new T.MeshPhysicalMaterial({color:0xe0742a,roughness:.28,metalness:.05,clearcoat:1,emissive:0x3a1505,side:T.DoubleSide,clippingPlanes:[pl]})));
-m.add(new T.Mesh(geo,new T.MeshBasicMaterial({color:0xd9a441,wireframe:true,transparent:true,opacity:.12,clippingPlanes:[pl2]})));
-const ring=new T.Mesh(new T.TorusGeometry(1,.012,8,128),new T.MeshBasicMaterial({color:0xffc27a}));ring.rotation.x=Math.PI/2;m.add(ring);
-const disc=new T.Mesh(new T.CircleGeometry(1,64),new T.MeshBasicMaterial({color:0xff9a4d,transparent:true,opacity:.2,blending:T.AdditiveBlending,side:T.DoubleSide,depthWrite:false}));disc.rotation.x=Math.PI/2;m.add(disc);
+m.add(new T.Mesh(geo,new T.MeshPhysicalMaterial({color:0xe0742a,roughness:.28,metalness:.05,clearcoat:1,emissive:0x4a2a0a,side:T.DoubleSide,clippingPlanes:[pl]})));
+m.add(new T.Mesh(geo,new T.MeshBasicMaterial({color:0xe3ad5f,wireframe:true,transparent:true,opacity:.12,clippingPlanes:[pl2]})));
+const ring=new T.Mesh(new T.TorusGeometry(1,.012,8,128),new T.MeshBasicMaterial({color:0xffd9a8}));ring.rotation.x=Math.PI/2;m.add(ring);
 const plat=new T.Mesh(new T.CylinderGeometry(2,2.1,.12,64),new T.MeshStandardMaterial({color:0x2a2420,metalness:.8,roughness:.3}));plat.position.y=A-.02;m.add(plat);
-const pr=new T.Mesh(new T.TorusGeometry(2,.015,8,96),new T.MeshBasicMaterial({color:0xd9a441}));pr.rotation.x=Math.PI/2;pr.position.y=A+.05;m.add(pr);
+const pr=new T.Mesh(new T.TorusGeometry(2,.015,8,96),new T.MeshBasicMaterial({color:0xf2a65a}));pr.rotation.x=Math.PI/2;pr.position.y=A+.05;m.add(pr);
 sc.add(new T.AmbientLight(0xffffff,.55));
 const k=new T.DirectionalLight(0xffffff,1.1);k.position.set(3,4,5);sc.add(k);
 const L1=new T.PointLight(0xffb066,2,9);L1.position.set(-3,1,3);sc.add(L1);
 const L2=new T.PointLight(0xff7a3d,1.6,9);L2.position.set(3,-2,3);sc.add(L2);
-const N=520,pp=new Float32Array(N*3);for(let i=0;i<N*3;i++)pp[i]=(Math.random()-.5)*(i%3==1?8:11);
-const pg=new T.BufferGeometry();pg.setAttribute('position',new T.BufferAttribute(pp,3));
-sc.add(new T.Points(pg,new T.PointsMaterial({size:.035,color:0xffb86b,transparent:true,opacity:.75,blending:T.AdditiveBlending,depthWrite:false})));
+const NT=26,tr=new T.InstancedMesh(new T.SphereGeometry(.04,10,8),new T.MeshBasicMaterial({color:0xffd9a8}),NT*2),dm=new T.Object3D();tr.frustumCulled=false;m.add(tr);
 function size(){const w=cv.clientWidth,h=cv.clientHeight;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();if(w<800){obj.position.set(0,1.2,0);obj.scale.setScalar(.62);cam.position.z=9}else{obj.position.set(2.6,0,0);obj.scale.setScalar(.95);cam.position.z=8}}
 addEventListener('resize',size);size();
 const t0=performance.now();
 (function loop(now){requestAnimationFrame(loop);
 const t=(now-t0)/1000,c=t%12,h=c<9?A+H*(c/9):c<11?A+H:A+H-H*(c-11),s=obj.scale.x,by=obj.position.y;
 const f=(h-A)/H,wy=by+(h-mid)*s;pl.constant=wy;pl2.constant=-wy;
-ring.position.y=h;ring.visible=f>.01&&f<.99;const q=rad(h)+.05;ring.scale.set(q,q,1);disc.visible=ring.visible;disc.position.y=h;disc.scale.set(q,q,1);L1.position.y=wy;
+ring.position.y=h;ring.visible=f>.01&&f<.99;const q=rad(h)+.05;ring.scale.set(q,q,1);L1.position.y=wy;
+for(let j=0;j<2;j++)for(let i=0;i<NT;i++){const a=t*5+j*Math.PI-i*.075;dm.position.set(Math.cos(a)*q,h,Math.sin(a)*q);dm.scale.setScalar(ring.visible?1-i/NT*.85:0);dm.updateMatrix();tr.setMatrixAt(j*NT+i,dm.matrix)}tr.instanceMatrix.needsUpdate=true;
 const sp=Math.min(1,scrollY/innerHeight);cv.style.opacity=1-sp*.9;obj.rotation.y=t*.35+sp*3;if(sp>=1){return}
 cam.position.x+=(mx*2-cam.position.x)*.04;cam.position.y+=(1.6-my*1.5-cam.position.y)*.04;cam.lookAt(0,by*.5,0);
-for(let i=0;i<N;i++){pp[i*3+1]+=.004+(i%7)*.0006;if(pp[i*3+1]>4)pp[i*3+1]=-4}pg.attributes.position.needsUpdate=true;
 const L=Math.round(Math.max(0,Math.min(1,f))*300);$('#layer').textContent=String(L).padStart(3,'0');$('#prog').style.width=L/3+'%';
 r.render(sc,cam)})(t0);
 })();
