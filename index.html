@@ -1,7 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Lumenrift: resin 3D printing, Blender modelling, sculpting and cosplay armour, shipped worldwide.">
+<title>Lumenrift — Resin 3D Printing, Sculpting & Modelling</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#f7f4ee;--fg:#1c1814;--mut:#6b6258;--surface:#fffdf9;--line:#e0d9cc;--a:#f2a65a;--b:#8a5a1c;--on:#1c1814;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(70px + env(safe-area-inset-top,0px))}
+body{background:var(--bg);color:var(--fg);font:400 1rem/1.65 Manrope,system-ui,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.05}
+.bar{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--a);z-index:60}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 5vw 14px;background:var(--bg);border-bottom:1px solid var(--line)}
+nav b{font:800 1.2rem Fraunces,Georgia,serif;letter-spacing:-.02em}nav b span{color:var(--b)}
+nav div{display:flex;gap:26px;align-items:center;font-size:.9rem;color:var(--mut)}
+nav div a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:4px;font-weight:700;border:1px solid var(--fg);transition:transform .25s,box-shadow .25s}
+.btn.p{background:var(--a);color:var(--on);border-color:var(--a)}
+.btn{transition:transform .25s,box-shadow .25s,translate .2s ease-out}.btn:hover{transform:translateY(-2px)}
+section{padding:clamp(70px,13vh,130px) 5vw;max-width:1280px;margin:auto;position:relative;z-index:1}
+
+.hero{max-width:none;min-height:100svh;display:grid;align-items:center;padding-top:110px;overflow:hidden}
+#gl{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.hc{position:relative;z-index:2;max-width:720px;pointer-events:none}.hc a{pointer-events:auto}
+.eb{display:inline-flex;gap:10px;align-items:center;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:22px}
+.eb i{width:8px;height:8px;border-radius:50%;background:var(--b);box-shadow:0 0 0 0 var(--b);animation:ping 2s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 12px transparent}}
+h1{font-size:clamp(2.6rem,6.2vw,5.4rem);font-weight:800;letter-spacing:-.04em}
+.w{display:inline-block;animation:up .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*.09s + .2s)}
+@keyframes up{from{opacity:0;transform:translateY(60%) rotate(4deg)}}
+h1 em{font-style:normal;color:var(--on);background:var(--a);padding:0 .12em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.sub{margin:24px 0 34px;font-size:1.12rem;color:var(--mut);max-width:520px}
+.cta{display:flex;gap:14px;flex-wrap:wrap}
+
+.hud{position:absolute;z-index:2;right:5vw;bottom:calc(32px + env(safe-area-inset-bottom,0px));font:500 .78rem ui-monospace,Menlo,monospace;color:var(--mut);text-align:right;letter-spacing:.08em}
+.hud strong{display:block;font-size:1.7rem;color:var(--b);letter-spacing:.02em}
+.hud div{width:150px;height:3px;background:var(--line);margin:8px 0 0 auto;border-radius:3px;overflow:hidden}.hud div i{display:block;height:100%;width:0;background:var(--b)}
+.mq{overflow:hidden;border-block:1px solid var(--line);padding:20px 0;white-space:nowrap;font:800 clamp(1.3rem,3vw,2.2rem) Fraunces,Georgia,serif;position:relative;z-index:1}
+.mq div{display:inline-block;animation:mq 32s linear infinite;color:transparent;-webkit-text-stroke:1px var(--mut)}.mq span{color:var(--a);-webkit-text-stroke:0}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px}
+.stats .card{text-align:center}.stats b{font:800 clamp(2.4rem,5vw,3.8rem) Fraunces,Georgia,serif;color:var(--fg);box-shadow:inset 0 -.2em 0 var(--a)}
+.stats small{display:block;color:var(--mut);font-size:.85rem}
+.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:28px;overflow:hidden;transition:transform .3s ease-out,border-color .3s,opacity .9s,translate .9s}.card:hover{border-color:var(--b);transform:translateY(-4px)}
+.rv{opacity:0;translate:0 40px}.rv.in{opacity:1;translate:0 0}
+.kick{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--b);margin-bottom:28px;padding-top:14px;border-top:1px solid var(--fg)}
+h2{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.03em;margin-bottom:46px;max-width:760px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+.svc h3{font-size:1.5rem;margin:14px 0 8px}.svc p{color:var(--mut);font-size:.95rem}
+.svc .ic{font-size:2rem;width:58px;height:58px;display:grid;place-items:center;border-radius:6px;background:var(--a);color:var(--on)}
+.price{display:block;margin-top:20px;font-weight:700}.price u{text-decoration:none;color:var(--b)}
+
+.art{height:210px;border-radius:4px;margin:0 0 22px;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);overflow:hidden;position:relative}
+.art canvas{width:100% !important;height:100% !important;outline:none}
+#custom-model-container{background:#2a231c;border-color:#2a231c}
+.art svg{height:88%;animation:fl 5s ease-in-out infinite alternate}
+@keyframes fl{to{transform:translateY(-8px)}}
+.tiles{display:grid;gap:10px;padding:22px;width:100%}
+.tile{aspect-ratio:1;background:var(--a);opacity:.2;animation:wave 2.6s ease-in-out infinite;animation-delay:calc(var(--i)*70ms)}
+.hex{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.fig{border-radius:50% 50% 14% 14%/62% 62% 14% 14%}
+@keyframes wave{50%{opacity:1;transform:scale(1.08)}}
+.pr h3{font-size:1.6rem}.pr p{color:var(--mut);font-size:.95rem;margin-top:8px}
+.tag{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--line);border-radius:3px;color:var(--b);margin-bottom:12px}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;counter-reset:s}
+.steps .card{counter-increment:s}.steps .card::after{content:"0" counter(s);position:absolute;right:18px;top:6px;font:800 3.4rem Fraunces,Georgia,serif;color:var(--line)}
+.steps h3{font-size:1.15rem;margin-bottom:8px}.steps p{color:var(--mut);font-size:.9rem}
+.rev p{font-size:1.02rem}.rev small{display:block;margin-top:18px;color:var(--mut)}.rev .st{color:var(--b);letter-spacing:.2em;margin-bottom:10px}
+.end{text-align:center}.end h2{margin:0 auto 20px;max-width:900px}.end p{color:var(--mut);margin-bottom:34px}.end .cta{justify-content:center}
+footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px}
+@media(max-width:720px){nav div a:not(.btn){display:none}.hud{display:none}.hero{align-items:end;padding-bottom:60px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<nav><b>lumen<span>rift</span></b><div><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Hire me</a></div></nav>
+
+<section class="hero" id="top">
+  <canvas id="gl"></canvas>
+  <div class="hc">
+    <div class="eb"><i></i>Resin 3D printing · Sculpting · Cosplay</div>
+    <h1><span class="w" style="--i:0">I</span> <span class="w" style="--i:1">turn</span> <span class="w" style="--i:2">your</span> <span class="w" style="--i:3">imagination</span> <span class="w" style="--i:4">into</span> <em><span class="w" style="--i:5">something</span> <span class="w" style="--i:6">you</span> <span class="w" style="--i:7">can</span> <span class="w" style="--i:8">hold.</span></em></h1>
+    <p class="sub">Lumenrift is a resin 3D printing and sculpting studio in India. Custom collectibles, cosplay armour and prototypes, modelled, printed and shipped worldwide.</p>
+    <div class="cta"><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Start a project →</a><a class="btn" href="#work">See my work</a></div>
+  </div>
+  <div class="hud"><span id="stage">LIVE RESIN PRINT</span><strong><span id="lbl">LAYER</span> <span id="layer">000</span></strong><div><i id="prog"></i></div></div>
+</section>
+
+<div class="mq"><div id="mq">RESIN PRINTING <span>✦</span> BLENDER <span>✦</span> SCULPTING <span>✦</span> PROTOTYPING <span>✦</span> COSPLAY ARMOUR <span>✦</span> COLLECTIBLES <span>✦</span> WORLDWIDE SHIPPING <span>✦</span> </div></div>
+
+<section>
+  <div class="stats">
+    <div class="card rv"><span class="n"><b data-to="5" data-d="1">0</b></span><small>Client rating</small></div>
+    <div class="card rv"><span class="n"><b data-to="10">0</b></span><small>5-star reviews</small></div>
+    <div class="card rv"><span class="n"><b data-to="45">0</b>+</span><small>models in big projects</small></div>
+    <div class="card rv"><span class="n"><b data-to="2">0</b>h</span><small>average response</small></div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="kick">01 — What I do</div><h2>From a rough idea to a finished piece in your hands.</h2>
+  <div class="g3">
+    <div class="card svc rv"><div class="ic">◈</div><h3>Resin 3D Printing</h3><p>High-detail resin prints of collectibles, custom models or anything else you send my way, with painting available.</p><span class="price">From <u>$10</u> / project</span></div>
+    <div class="card svc rv"><div class="ic">⚔</div><h3>Resin Cosplay</h3><p>Wearable, display-ready cosplay pieces and armour sets, printed in sections and finished to fit your build.</p><span class="price">From <u>$30</u> / project</span></div>
+    <div class="card svc rv"><div class="ic">✺</div><h3>Modelling & Sculpting</h3><p>Custom 3D models and sculpts in Blender, plus prototyping so your idea is print-ready from day one.</p><span class="price">Blender expert</span></div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="kick">02 — Selected projects</div><h2>Big builds, printed layer by layer.</h2>
+  <div class="g3">
+    <article class="card pr rv">
+      <div class="art" id="custom-model-container" style="cursor:grab"></div>
+      <span class="tag">Bust · Resin</span>
+      <h3>Custom 3D Model</h3>
+      <p>An imported GLTF model rendered interactively. Drag to rotate the viewport in real-time.</p>
+    </article>
+
+    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(6,1fr)" data-grid="18" data-shape="hex"></div></div><span class="tag">18 models · Cosplay</span><h3>Devil Jinn Armour</h3><p>A full cosplay armour set split into 18 printed models, designed to assemble cleanly and look the part.</p></article>
+
+    <article class="card pr rv"><div class="art"><div class="tiles" style="grid-template-columns:repeat(9,1fr)" data-grid="27" data-shape="fig"></div></div><span class="tag">27 models · Figurines</span><h3>Spiritual Figurines</h3><p>A collection of 27 individually modelled figurines, printed as a consistent, display-ready series.</p></article>
+  </div>
+</section>
+
+<section id="process">
+  <div class="kick">03 — How it works</div><h2>Simple, transparent, fast.</h2>
+  <div class="steps">
+    <div class="card rv"><h3>Brief</h3><p>Send me your idea, reference or file. I reply within hours.</p></div>
+    <div class="card rv"><h3>Model</h3><p>I model or sculpt in Blender, or prep your existing file for resin.</p></div>
+    <div class="card rv"><h3>Print</h3><p>Sliced, supported and printed in high-detail resin.</p></div>
+    <div class="card rv"><h3>Finish</h3><p>Washed, cured, cleaned up and painted if you want it.</p></div>
+    <div class="card rv"><h3>Ship</h3><p>Safely packaged and sent internationally.</p></div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="kick">04 — Client love</div><h2>Rated 5.0 by every client so far.</h2>
+  <div class="g3">
+    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great artist, he's so good at what he does… it came out amazingly. Highly recommended."</p><small>oluwaseun3413 · United States</small></div>
+    <div class="card rev rv"><div class="st">★★★★★</div><p>"Communicates better, fast and assuring responses, reliable feedback, work that satisfies your needs, and professionalism."</p><small>oluwaseun3413 · United States</small></div>
+    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great. Very pleased with this. Thank you."</p><small>jdoherty1976 · United Kingdom</small></div>
+    <div class="card rev rv"><div class="st">★★★★★</div><p>"Great as always. Thanks!"</p><small>jdoherty1976 · United Kingdom, repeat client</small></div>
+  </div>
+</section>
+
+<section class="end">
+  <h2>Got a model in mind? Let's make it real.</h2><p>Replies within 12 hours · International shipping · Packaging included</p>
+  <div class="cta"><a class="btn p" href="https://www.fiverr.com/conversations/lumenrift" target="_blank" rel="noopener">Start a conversation →</a><a class="btn" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">See full portfolio</a></div>
+</section>
+<footer>© Lumenrift · English, Hindi · India</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let mx=0,my=0;
+$$('[data-grid]').forEach(el=>{for(let i=0;i<+el.dataset.grid;i++){const d=document.createElement('i');d.className='tile '+el.dataset.shape;d.style.setProperty('--i',i);el.appendChild(d)}});
+$('#mq').innerHTML+=$('#mq').innerHTML;
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);setTimeout(()=>e.target.style.transitionDelay='0ms',1400)}}),{threshold:.12});
+$$('.rv').forEach((e,i)=>{e.style.transitionDelay=(i%5)*70+'ms';io.observe(e)});
+const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);const el=e.target,t=+el.dataset.to,d=+el.dataset.d||0,s=performance.now();(function f(n){const p=Math.min(1,(n-s)/1600);el.textContent=(t*(1-Math.pow(1-p,3))).toFixed(d);if(p<1)requestAnimationFrame(f)})(s)}));
+$$('[data-to]').forEach(e=>co.observe(e));
+addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+addEventListener('scroll',()=>{$('#bar').style.transform=`scaleX(${scrollY/(document.documentElement.scrollHeight-innerHeight)||0})`},{passive:true});
+$$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.translate=`${(e.clientX-r.left-r.width/2)*.18}px ${(e.clientY-r.top-r.height/2)*.3}px`});b.addEventListener('pointerleave',()=>b.style.translate='')});
+
+/* ============================================================
+   CARD MODEL VIEWER (your-model.glb) — runs on its own, so a
+   problem in the hero wireframe below can never block it.
+   ============================================================ */
+(function(){
+  const MODEL_URL='your-model.glb';   // same folder as index.html
+  let modelRef=null,pending=null;
+  const USE_ORIGINAL_MATERIALS=false; // false = plain clay finish (always visible); true = keep the .glb's own materials
+  const box0=$('#custom-model-container');
+  if(!box0)return;
+  if(!window.THREE){console.error('three.js failed to load (cdnjs).');return}
+  if(!THREE.GLTFLoader){console.error('GLTFLoader.js failed to load (jsdelivr). Check the Network tab.');return}
+  if(!THREE.OrbitControls){console.error('OrbitControls.js failed to load (jsdelivr). Check the Network tab.');return}
+
+  const W=()=>box0.clientWidth||300,H=()=>box0.clientHeight||210;
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(50,W()/H(),.1,100);
+  cam.position.set(0,0,3.5);
+
+  const ren=new THREE.WebGLRenderer({alpha:true,antialias:true});
+  ren.setSize(W(),H());
+  ren.setPixelRatio(Math.min(devicePixelRatio,2));
+  ren.outputEncoding=THREE.sRGBEncoding;
+  ren.setClearColor(0x2a231c,1);   // dark stage behind the model
+  box0.appendChild(ren.domElement);
+
+  const ctl=new THREE.OrbitControls(cam,ren.domElement);
+  ctl.enableDamping=true;
+  ctl.enableZoom=false;           // keeps mouse-wheel scrolling the page
+  ctl.autoRotate=true;
+  ctl.autoRotateSpeed=2;
+
+  scene.add(new THREE.AmbientLight(0xffffff,.8));
+  const key=new THREE.DirectionalLight(0xf2a65a,.9);key.position.set(5,5,5);scene.add(key);
+  const rim=new THREE.DirectionalLight(0x77aaff,.5);rim.position.set(-5,5,-5);scene.add(rim);
+  const fill=new THREE.DirectionalLight(0xffffff,.4);fill.position.set(0,-4,5);scene.add(fill);
+
+  // Placeholder, removed as soon as the real model has loaded
+  const placeholder=new THREE.Mesh(
+    new THREE.TorusKnotGeometry(.7,.2,100,16),
+    new THREE.MeshStandardMaterial({color:0xf2a65a,metalness:.5,roughness:.2})
+  );
+  scene.add(placeholder);
+
+  // Diagnostic: tells you what the server really returns for the file.
+  // A valid .glb starts with the 4 characters "glTF".
+  fetch(MODEL_URL).then(async res=>{
+    const buf=await res.arrayBuffer();
+    const head=new TextDecoder().decode(buf.slice(0,24));
+    console.log('[model] HTTP',res.status,'|',res.headers.get('content-type'),'|',buf.byteLength,'bytes | starts with',JSON.stringify(head));
+    if(head.startsWith('version https://git-lfs'))console.error('[model] This is a Git LFS pointer, not the real file.');
+    else if(head.trim().startsWith('<'))console.error('[model] Got an HTML page instead of a .glb (usually a 404).');
+    else if(!head.startsWith('glTF'))console.warn('[model] File does not start with "glTF". If it is a .gltf (JSON) file, that is fine.');
+  }).catch(e=>console.error('[model] Fetch failed. Opening index.html by double-click (file://) blocks this; use a local server or GitHub Pages.',e));
+
+  new THREE.GLTFLoader().load(
+    MODEL_URL,
+    gltf=>{
+      scene.remove(placeholder);
+      gltf.scene.updateMatrixWorld(true);
+
+      // Rebuild the model as plain static meshes in their rest pose.
+      // Rigged (skinned) exports can render at the wrong scale or get culled,
+      // and a still display piece does not need the skeleton.
+      const model=new THREE.Group();
+      let meshes=0,tris=0;
+      const seen=new Set();
+      const clay=new THREE.MeshStandardMaterial({color:0xf2a65a,roughness:.55,metalness:0,side:THREE.DoubleSide});
+      gltf.scene.traverse(o=>{
+        if(!o.isMesh||!o.geometry||!o.geometry.attributes.position)return;
+        const g=o.geometry.clone();
+        g.deleteAttribute('skinIndex');g.deleteAttribute('skinWeight');
+        g.applyMatrix4(o.matrixWorld);          // bake position + normals into world space
+        if(!g.attributes.normal)g.computeVertexNormals();
+        const src=[].concat(o.material||[]);
+        src.forEach(mt=>{if(seen.has(mt))return;seen.add(mt);
+          console.log('[model] material',JSON.stringify(mt.name||'(unnamed)'),'| colour #'+(mt.color?mt.color.getHexString():'none'),
+            '| map:',!!mt.map,'| opacity:',mt.opacity,'| transparent:',mt.transparent,
+            '| metalness:',mt.metalness,'| roughness:',mt.roughness)});
+        let mat=clay;
+        if(USE_ORIGINAL_MATERIALS){
+          const mats=src.map(mt=>{const c=mt.clone();c.skinning=false;c.side=THREE.DoubleSide;return c});
+          mat=Array.isArray(o.material)?mats:mats[0];
+        }
+        const mesh=new THREE.Mesh(g,mat);
+        mesh.frustumCulled=false;
+        model.add(mesh);
+        meshes++;tris+=(g.index?g.index.count:g.attributes.position.count)/3;
+      });
+
+      model.updateMatrixWorld(true);
+      const bb=new THREE.Box3().setFromObject(model);
+      const size=bb.getSize(new THREE.Vector3());
+      const centre=bb.getCenter(new THREE.Vector3());
+      const max=Math.max(size.x,size.y,size.z);
+      if(!isFinite(max)||max===0)console.error('[model] Could not measure the model (no mesh vertices found).');
+      const s=2/((isFinite(max)&&max)||1);              // fit to about 2 units
+      model.scale.setScalar(s);
+      model.position.copy(centre).multiplyScalar(-s);   // re-centre after scaling
+      scene.add(model);
+      if(/[?&]debug/.test(location.search)){scene.add(new THREE.BoxHelper(model,0xff00ff));scene.add(new THREE.AxesHelper(1.5));}
+      console.log('[model] Rebuilt',meshes,'meshes /',Math.round(tris),'triangles | size:',
+        size.x.toFixed(3),size.y.toFixed(3),size.z.toFixed(3),'| scale:',s.toFixed(3));
+
+      modelRef=model;
+      setTimeout(()=>{pending='shortly after load'},800);
+    },
+    undefined,
+    err=>console.error('[model] GLTFLoader error:',err)
+  );
+
+  // Reads the canvas right after a render and reports what is really on it
+  function report(label){
+    const gl=ren.getContext(),w=gl.drawingBufferWidth,h=gl.drawingBufferHeight,px=new Uint8Array(w*h*4);
+    gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,px);
+    let diff=0;
+    for(let i=0;i<px.length;i+=4)if(Math.abs(px[i]-42)>4||Math.abs(px[i+1]-35)>4||Math.abs(px[i+2]-28)>4)diff++;
+    let ndc='no model yet';
+    if(modelRef){
+      const b=new THREE.Box3().setFromObject(modelRef),v=new THREE.Vector3();
+      let x0=9,x1=-9,y0=9,y1=-9;
+      for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z]){
+        v.set(x,y,z).project(cam);x0=Math.min(x0,v.x);x1=Math.max(x1,v.x);y0=Math.min(y0,v.y);y1=Math.max(y1,v.y);
+      }
+      ndc=[x0,x1,y0,y1].map(n=>n.toFixed(2)).join(' ');
+    }
+    const card=box0.closest('.card'),rc=box0.getBoundingClientRect();
+    console.log('[model] probe:',label,
+      '| pixels differing from background:',(100*diff/(w*h)).toFixed(1)+'%',
+      '| model x0 x1 y0 y1 on screen (-1..1 = inside):',ndc,
+      '| card opacity:',card?getComputedStyle(card).opacity:'n/a',
+      '| canvas top/height in viewport:',Math.round(rc.top),Math.round(rc.height));
+  }
+
+  (function tick(){
+    requestAnimationFrame(tick);
+    ctl.update();
+    ren.render(scene,cam);
+    if(pending){const label=pending;pending=null;report(label)}
+  })();
+
+  // Probe again once the card has actually been scrolled into view
+  new IntersectionObserver((es,ob)=>{
+    if(es[0].isIntersecting){ob.disconnect();setTimeout(()=>{pending='card scrolled into view'},1500)}
+  },{threshold:.5}).observe(box0);
+
+  addEventListener('resize',()=>{
+    if(!box0.clientWidth)return;
+    cam.aspect=W()/H();cam.updateProjectionMatrix();
+    ren.setSize(W(),H());
+  });
+})();
+
 /* ============================================================
    HERO — your-model.glb prints layer by layer, then a brush
    hovers over it and paints the GLB's own textures on, row by row.
-   Replace the whole old "HERO" (function(){ ... })(); block with this.
    ============================================================ */
 (function(){
   const MODEL_URL='your-model.glb';  // same folder as index.html
@@ -156,3 +482,6 @@
   addEventListener('resize',size);size();
   render();
 })();
+</script>
+</body>
+</html>
