@@ -73,14 +73,19 @@ h2{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.03em;margin
 .steps h3{font-size:1.15rem;margin-bottom:8px}.steps p{color:var(--mut);font-size:.9rem}
 .rev p{font-size:1.02rem}.rev small{display:block;margin-top:18px;color:var(--mut)}.rev .st{color:var(--b);letter-spacing:.2em;margin-bottom:10px}
 .end{text-align:center}.end h2{margin:0 auto 20px;max-width:900px}.end p{color:var(--mut);margin-bottom:34px}.end .cta{justify-content:center}
+.cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;max-width:900px;margin:64px auto 0;text-align:left}
+.cl .card{display:flex;flex-direction:column;gap:4px;padding:22px 24px}
+.cl small{font-size:.78rem;font-weight:700;color:var(--b)}
+.cl b{font:700 1.05rem Manrope,system-ui,sans-serif;overflow-wrap:anywhere}
 footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px}
+footer a{text-decoration:underline;text-underline-offset:3px}footer a:hover{color:var(--fg)}
 @media(max-width:720px){nav div a:not(.btn){display:none}.hud{display:none}.hero{align-items:end;padding-bottom:60px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
 <div class="bar" id="bar"></div>
-<nav><b><img src="Logo.png" alt="Lumenrift logo"><em>lumen<span>rift</span></em></b><div><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Hire Lumenrift</a></div></nav>
+<nav><b><img src="Logo.png" alt="Lumenrift logo"><em>lumen<span>rift</span></em></b><div><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#reviews">Reviews</a><a href="#contact">Contact</a><a class="btn p" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">Hire Lumenrift</a></div></nav>
 
 <section class="hero" id="top">
   <canvas id="gl"></canvas>
@@ -145,11 +150,16 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:30px 5vw 50px
   </div>
 </section>
 
-<section class="end">
+<section class="end" id="contact">
   <h2>Got a model in mind? Let's make it real.</h2><p>Replies within 12 hours · International shipping · Packaging included</p>
   <div class="cta"><a class="btn p" href="https://www.fiverr.com/conversations/lumenrift" target="_blank" rel="noopener">Start a conversation →</a><a class="btn" href="https://www.fiverr.com/lumenrift" target="_blank" rel="noopener">See full portfolio</a></div>
+  <div class="cl">
+    <a class="card rv" href="https://www.instagram.com/lumenrift.biz/" target="_blank" rel="noopener"><small>Instagram</small><b>@lumenrift.biz</b></a>
+    <a class="card rv" href="mailto:lumenrift.biz@gmail.com"><small>Email</small><b>lumenrift.biz@gmail.com</b></a>
+    <a class="card rv" href="tel:+918384069852"><small>Phone</small><b>+91 8384069852</b></a>
+  </div>
 </section>
-<footer>© Lumenrift · English, Hindi · India</footer>
+<footer>© Lumenrift · English, Hindi · India<br><a href="https://www.instagram.com/lumenrift.biz/" target="_blank" rel="noopener">@lumenrift.biz</a> · <a href="mailto:lumenrift.biz@gmail.com">lumenrift.biz@gmail.com</a> · <a href="tel:+918384069852">+91 8384069852</a></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -191,7 +201,8 @@ $$('.btn.p').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBound
   const rim=new T.DirectionalLight(0xffffff,1.1);rim.position.set(-5,3,-4);sc.add(rim);
 
   const top=new T.Plane(new T.Vector3(0,-1,0),-99),bot=new T.Plane(new T.Vector3(0,1,0),99);
-  const solid=new T.MeshStandardMaterial({color:0xe8923a,emissive:0x4a2306,roughness:.3,metalness:.05,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
+  // dark black resin: near-zero colour and no emissive, a little gloss so the lights still catch the form
+  const solid=new T.MeshStandardMaterial({color:0x050505,emissive:0x000000,roughness:.28,metalness:.1,side:T.DoubleSide,clippingPlanes:[top],polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
   const glow=new T.MeshBasicMaterial({color:0xfff0cf,side:T.DoubleSide,clippingPlanes:[top,bot],polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
 
   /* ---- paint: a textured copy of the model that only exists where the brush has been ----
